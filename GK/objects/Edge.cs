@@ -8,8 +8,14 @@ namespace GK.objects
 {
     internal class Edge
     {
-        private Vertex startVertex;
-        private Vertex endVertex;
+        public Vertex startVertex { get; set; }
+        public Vertex endVertex { get; set; }
+
+        public Edge(Vertex startVertex, Vertex endVertex)
+        {
+            this.startVertex = startVertex;
+            this.endVertex = endVertex;
+        }
 
     }
 }

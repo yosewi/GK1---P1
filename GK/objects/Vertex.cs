@@ -8,8 +8,14 @@ namespace GK.objects
 {
     internal class Vertex
     {
-        int x;
-        int y;
+        public double x { get; set; }
+        public double y { get; set; }
+
+        public Vertex(double x, double y)
+        {
+            this.x = x;
+            this.y = y;
+        }
 
     }
 }
