@@ -32,7 +32,10 @@
             panel = new BufferingPanel();
             VertexContextMenu = new ContextMenuStrip(components);
             deleteVertexToolStripMenuItem = new ToolStripMenuItem();
+            EdgeContextMenu = new ContextMenuStrip(components);
+            addVertexToolStripMenuItem = new ToolStripMenuItem();
             VertexContextMenu.SuspendLayout();
+            EdgeContextMenu.SuspendLayout();
             SuspendLayout();
             // 
             // panel
@@ -52,14 +55,27 @@
             // 
             VertexContextMenu.Items.AddRange(new ToolStripItem[] { deleteVertexToolStripMenuItem });
             VertexContextMenu.Name = "VertexContextMenu";
-            VertexContextMenu.Size = new Size(181, 48);
+            VertexContextMenu.Size = new Size(143, 26);
             // 
             // deleteVertexToolStripMenuItem
             // 
             deleteVertexToolStripMenuItem.Name = "deleteVertexToolStripMenuItem";
-            deleteVertexToolStripMenuItem.Size = new Size(180, 22);
+            deleteVertexToolStripMenuItem.Size = new Size(142, 22);
             deleteVertexToolStripMenuItem.Text = "Delete vertex";
             deleteVertexToolStripMenuItem.Click += deleteVertexToolStripMenuItem_Click;
+            // 
+            // EdgeContextMenu
+            // 
+            EdgeContextMenu.Items.AddRange(new ToolStripItem[] { addVertexToolStripMenuItem });
+            EdgeContextMenu.Name = "EdgeContextMenu";
+            EdgeContextMenu.Size = new Size(181, 48);
+            // 
+            // addVertexToolStripMenuItem
+            // 
+            addVertexToolStripMenuItem.Name = "addVertexToolStripMenuItem";
+            addVertexToolStripMenuItem.Size = new Size(180, 22);
+            addVertexToolStripMenuItem.Text = "Add vertex";
+            addVertexToolStripMenuItem.Click += addVertexToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -71,6 +87,7 @@
             Name = "Form1";
             Text = "Form1";
             VertexContextMenu.ResumeLayout(false);
+            EdgeContextMenu.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -79,5 +96,7 @@
         private BufferingPanel panel;
         private ContextMenuStrip VertexContextMenu;
         private ToolStripMenuItem deleteVertexToolStripMenuItem;
+        private ContextMenuStrip EdgeContextMenu;
+        private ToolStripMenuItem addVertexToolStripMenuItem;
     }
 }

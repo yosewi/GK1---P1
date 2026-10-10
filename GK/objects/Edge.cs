@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GK.algorithms;
 
 namespace GK.objects
 {
@@ -17,5 +18,9 @@ namespace GK.objects
             this.endVertex = endVertex;
         }
 
+        public bool IsHit(double x, double y, double radius)
+        {
+            return Geometry.IsNearEdge(x, y, startVertex.x, startVertex.y, endVertex.x, endVertex.y, radius);
+        }
     }
 }

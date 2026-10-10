@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GK.algorithms;
 
 namespace GK.objects
 {
@@ -23,6 +24,11 @@ namespace GK.objects
         {
             this.x = x;
             this.y = y;
+        }
+
+        public bool IsHit(double x, double y, double radius)
+        {
+            return Geometry.Distance(this.x, this.y, x, y) <= radius;
         }
     }
 }

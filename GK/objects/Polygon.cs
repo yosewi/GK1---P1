@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using GK.algorithms;
 
 namespace GK.objects
 {
@@ -38,11 +39,9 @@ namespace GK.objects
 
         public Vertex? ClickedVertex(double x, double y, double radius)
         {
-            foreach(Vertex v in vertices)
+            foreach (Vertex v in vertices)
             {
-                double x2 = v.x - x;
-                double y2 = v.y - y;
-                if(x2 * x2 + y2 * y2 <= radius * radius)
+                if (v.IsHit(x, y, radius))
                 {
                     return v;
                 }
@@ -102,6 +101,38 @@ namespace GK.objects
             edges.Insert(id, e);
             e.startVertex.secondEdge = e;
             e.endVertex.firstEdge = e;
+        }
+
+        public Edge? ClickedEdge(double x, double y, double radius)
+        {
+            foreach (Edge e in edges)
+            {
+                if (e.IsHit(x, y, radius))
+                {
+                    return e;
+                }
+            }
+            return null;
+        }
+
+        public void AddVertexOnEdge(Edge e)
+        {
+            Vertex start = e.startVertex;
+            Vertex end = e.endVertex;
+            (double x, double y) = Geometry.Midpoint(start.x, start.y, end.x, end.y);
+            Vertex v = new Vertex(x, y);
+            int place = vertices.IndexOf(start) + 1;
+            vertices.Insert(place, v);
+            Edge e1 = new Edge(start, v);
+            Edge e2 = new Edge(v, end);
+            int edgeId = edges.IndexOf(e);
+            edges.RemoveAt(edgeId);
+            edges.Insert(edgeId, e1);
+            edges.Insert(edgeId + 1, e2);
+            start.secondEdge = e1;
+            end.firstEdge = e2;
+            v.firstEdge = e1;
+            v.secondEdge = e2;
         }
     }
 }

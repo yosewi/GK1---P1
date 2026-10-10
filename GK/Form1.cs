@@ -13,7 +13,8 @@ namespace GK
         Vertex? draggedVertex = null;
         Polygon? draggedPolygon = null;
         Vertex? menuVertex = null;
-        Polygon? PolygonDeletingVertex = null;
+        Polygon? menuPolygon = null;
+        Edge? menuEdge = null;
         Point lastMousePosition;
 
         public Form1()
@@ -61,16 +62,28 @@ namespace GK
 
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
-            if(e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
-                for(int i = polygons.Count - 1; i>=0; i--)
+                for (int i = polygons.Count - 1; i >= 0; i--)
                 {
                     Vertex? vertex = polygons[i].ClickedVertex(e.X, e.Y, 8);
-                    if(vertex != null)
+                    if (vertex != null)
                     {
                         menuVertex = vertex;
-                        PolygonDeletingVertex = polygons[i];
+                        menuPolygon = polygons[i];
                         VertexContextMenu.Show(panel, e.Location);
+                        return;
+                    }
+                }
+
+                for (int i = polygons.Count - 1; i >= 0; i--)
+                {
+                    Edge? edge = polygons[i].ClickedEdge(e.X, e.Y, 6);
+                    if (edge != null)
+                    {
+                        menuEdge = edge;
+                        menuPolygon = polygons[i];
+                        EdgeContextMenu.Show(panel, e.Location);
                         return;
                     }
                 }
@@ -107,12 +120,23 @@ namespace GK
 
         private void deleteVertexToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (PolygonDeletingVertex != null && menuVertex != null)
+            if (menuPolygon != null && menuVertex != null)
             {
-                PolygonDeletingVertex.DeleteVertex(menuVertex);
+                menuPolygon.DeleteVertex(menuVertex);
             }
             menuVertex = null;
-            PolygonDeletingVertex = null;
+            menuPolygon = null;
+            panel.Invalidate();
+        }
+
+        private void addVertexToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (menuPolygon != null && menuEdge != null)
+            {
+                menuPolygon.AddVertexOnEdge(menuEdge);
+            }
+            menuEdge = null;
+            menuPolygon = null;
             panel.Invalidate();
         }
     }
