@@ -28,7 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             panel = new BufferingPanel();
+            VertexContextMenu = new ContextMenuStrip(components);
+            deleteVertexToolStripMenuItem = new ToolStripMenuItem();
+            VertexContextMenu.SuspendLayout();
             SuspendLayout();
             // 
             // panel
@@ -44,6 +48,19 @@
             panel.MouseMove += panel_MouseMove;
             panel.MouseUp += panel_MouseUp;
             // 
+            // VertexContextMenu
+            // 
+            VertexContextMenu.Items.AddRange(new ToolStripItem[] { deleteVertexToolStripMenuItem });
+            VertexContextMenu.Name = "VertexContextMenu";
+            VertexContextMenu.Size = new Size(181, 48);
+            // 
+            // deleteVertexToolStripMenuItem
+            // 
+            deleteVertexToolStripMenuItem.Name = "deleteVertexToolStripMenuItem";
+            deleteVertexToolStripMenuItem.Size = new Size(180, 22);
+            deleteVertexToolStripMenuItem.Text = "Delete vertex";
+            deleteVertexToolStripMenuItem.Click += deleteVertexToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -53,11 +70,14 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "Form1";
             Text = "Form1";
+            VertexContextMenu.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
         private BufferingPanel panel;
+        private ContextMenuStrip VertexContextMenu;
+        private ToolStripMenuItem deleteVertexToolStripMenuItem;
     }
 }

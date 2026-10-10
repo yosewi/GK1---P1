@@ -12,6 +12,8 @@ namespace GK
         public DraggingType draggingType { get; set; } = DraggingType.None;
         Vertex? draggedVertex = null;
         Polygon? draggedPolygon = null;
+        Vertex? menuVertex = null;
+        Polygon? PolygonDeletingVertex = null;
         Point lastMousePosition;
 
         public Form1()
@@ -26,7 +28,7 @@ namespace GK
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             Drawer drawer = new Drawer();
-            foreach(Polygon p in polygons)
+            foreach (Polygon p in polygons)
             {
                 drawer.DrawPolygon(p, e.Graphics);
             }
@@ -34,13 +36,13 @@ namespace GK
 
         private void panel_MouseMove(object sender, MouseEventArgs e)
         {
-            if(draggingType == DraggingType.MovingVertex && draggedVertex != null)
+            if (draggingType == DraggingType.MovingVertex && draggedVertex != null)
             {
                 draggedVertex.x = e.X;
                 draggedVertex.y = e.Y;
                 panel.Invalidate();
             }
-            else if(draggingType == DraggingType.MovingPolygon && draggedPolygon != null)
+            else if (draggingType == DraggingType.MovingPolygon && draggedPolygon != null)
             {
                 int x = e.X - lastMousePosition.X;
                 int y = e.Y - lastMousePosition.Y;
@@ -59,6 +61,22 @@ namespace GK
 
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
+            if(e.Button == MouseButtons.Right)
+            {
+                for(int i = polygons.Count - 1; i>=0; i--)
+                {
+                    Vertex? vertex = polygons[i].ClickedVertex(e.X, e.Y, 8);
+                    if(vertex != null)
+                    {
+                        menuVertex = vertex;
+                        PolygonDeletingVertex = polygons[i];
+                        VertexContextMenu.Show(panel, e.Location);
+                        return;
+                    }
+                }
+                return;
+            }
+
             if (e.Button != MouseButtons.Left)
             {
                 return;
@@ -85,6 +103,17 @@ namespace GK
                     return;
                 }
             }
+        }
+
+        private void deleteVertexToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (PolygonDeletingVertex != null && menuVertex != null)
+            {
+                PolygonDeletingVertex.DeleteVertex(menuVertex);
+            }
+            menuVertex = null;
+            PolygonDeletingVertex = null;
+            panel.Invalidate();
         }
     }
 }

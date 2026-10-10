@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,6 +27,12 @@ namespace GK.objects
                 Vertex start = vertices[i];
                 Vertex end = vertices[(i + 1) % n];
                 edges.Add(new Edge(start, end));
+            }
+
+            for(int i = 0; i < n; i++)
+            {
+                vertices[i].firstEdge = edges[(edges.Count - 1 + i) % edges.Count];
+                vertices[i].secondEdge = edges[i];
             }
         }
 
@@ -68,6 +75,33 @@ namespace GK.objects
                 v.x += x;
                 v.y += y;
             }
+        }
+
+        public bool DeleteVertex(Vertex v)
+        {
+            if (vertices.Count <= 3)
+            {
+                return false;
+            }
+
+            vertices.Remove(v);
+            EdgesAfterDeletingVertex(v.firstEdge, v.secondEdge);
+            return true;
+        }
+
+        public void EdgesAfterDeletingVertex(Edge e1, Edge e2)
+        {
+            int id = edges.IndexOf(e1);
+            edges.Remove(e1);
+            if (edges.IndexOf(e2) < id)
+            {
+                id--;
+            }
+            edges.Remove(e2);
+            Edge e = new Edge(e1.startVertex, e2.endVertex);
+            edges.Insert(id, e);
+            e.startVertex.secondEdge = e;
+            e.endVertex.firstEdge = e;
         }
     }
 }

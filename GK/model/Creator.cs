@@ -29,7 +29,10 @@ namespace GK.model
                 new Vertex(600, 100),
                 new Vertex(700, 100),
                 new Vertex(900, 300),
-                new Vertex(800, 300)
+                new Vertex(800, 300),
+                new Vertex(900, 350),
+                new Vertex(950, 300),
+                new Vertex(1000, 300)
             };
             return new Polygon(vertices);
         }

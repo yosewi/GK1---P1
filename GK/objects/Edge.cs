@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GK.objects
 {
-    internal class Edge
+    public class Edge
     {
         public Vertex startVertex { get; set; }
         public Vertex endVertex { get; set; }
