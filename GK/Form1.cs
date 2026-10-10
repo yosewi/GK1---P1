@@ -1,3 +1,4 @@
+using GK.enums;
 using GK.model;
 using GK.objects;
 
@@ -5,29 +6,85 @@ namespace GK
 {
     public partial class Form1 : Form
     {
-        Polygon p1;
+        List<Polygon> polygons = new List<Polygon>();
         FullScreen fullScreen;
+        Creator creator;
+        public DraggingType draggingType { get; set; } = DraggingType.None;
+        Vertex? draggedVertex = null;
+        Polygon? draggedPolygon = null;
+        Point lastMousePosition;
+
         public Form1()
         {
             InitializeComponent();
             fullScreen = new FullScreen(this);
-            Vertex v1 = new Vertex(100, 100);
-            Vertex v2 = new Vertex(300, 100);
-            Vertex v3 = new Vertex(200, 250);
-            Edge e1 = new Edge(v1, v2);
-            Edge e2 = new Edge(v2, v3);
-            Edge e3 = new Edge(v3, v1);
-            List<Vertex> verticesP1 = new List<Vertex> { v1, v2, v3 };
-            List<Edge> edgesP1 = new List<Edge> { e1, e2, e3 };
-            p1 = new Polygon(verticesP1, edgesP1);
-
-
+            creator = new Creator();
+            polygons.Add(creator.createTriangle());
+            polygons.Add(creator.createpoli());
         }
 
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             Drawer drawer = new Drawer();
-            drawer.DrawPolygon(p1, e.Graphics);
+            foreach(Polygon p in polygons)
+            {
+                drawer.DrawPolygon(p, e.Graphics);
+            }
+        }
+
+        private void panel_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(draggingType == DraggingType.MovingVertex && draggedVertex != null)
+            {
+                draggedVertex.x = e.X;
+                draggedVertex.y = e.Y;
+                panel.Invalidate();
+            }
+            else if(draggingType == DraggingType.MovingPolygon && draggedPolygon != null)
+            {
+                int x = e.X - lastMousePosition.X;
+                int y = e.Y - lastMousePosition.Y;
+                draggedPolygon.Move(x, y);
+                lastMousePosition = e.Location;
+                panel.Invalidate();
+            }
+        }
+
+        private void panel_MouseUp(object sender, MouseEventArgs e)
+        {
+            draggingType = DraggingType.None;
+            draggedVertex = null;
+            draggedPolygon = null;
+        }
+
+        private void panel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
+
+            for (int i = polygons.Count - 1; i >= 0; i--)
+            {
+                Vertex? vertex = polygons[i].ClickedVertex(e.X, e.Y, 8);
+                if (vertex != null)
+                {
+                    draggedVertex = vertex;
+                    draggingType = DraggingType.MovingVertex;
+                    return;
+                }
+            }
+
+            for (int i = polygons.Count - 1; i >= 0; i--)
+            {
+                if (polygons[i].IsInside(e.X, e.Y))
+                {
+                    draggedPolygon = polygons[i];
+                    lastMousePosition = e.Location;
+                    draggingType = DraggingType.MovingPolygon;
+                    return;
+                }
+            }
         }
     }
 }

@@ -28,24 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
-            panel = new Panel();
+            panel = new BufferingPanel();
             SuspendLayout();
             // 
             // panel
             // 
             panel.Dock = DockStyle.Fill;
             panel.Location = new Point(0, 0);
+            panel.Margin = new Padding(3, 2, 3, 2);
             panel.Name = "panel";
-            panel.Size = new Size(1202, 709);
+            panel.Size = new Size(1052, 532);
             panel.TabIndex = 0;
             panel.Paint += panel_Paint;
+            panel.MouseDown += panel_MouseDown;
+            panel.MouseMove += panel_MouseMove;
+            panel.MouseUp += panel_MouseUp;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1202, 709);
+            ClientSize = new Size(1052, 532);
             Controls.Add(panel);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
@@ -53,6 +58,6 @@
 
         #endregion
 
-        private Panel panel;
+        private BufferingPanel panel;
     }
 }
