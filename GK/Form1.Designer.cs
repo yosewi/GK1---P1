@@ -30,16 +30,24 @@
         {
             components = new System.ComponentModel.Container();
             panel = new BufferingPanel();
+            panel1 = new Panel();
+            groupBox1 = new GroupBox();
+            radioButton2 = new RadioButton();
+            radioButton1 = new RadioButton();
             VertexContextMenu = new ContextMenuStrip(components);
             deleteVertexToolStripMenuItem = new ToolStripMenuItem();
             EdgeContextMenu = new ContextMenuStrip(components);
             addVertexToolStripMenuItem = new ToolStripMenuItem();
+            panel.SuspendLayout();
+            panel1.SuspendLayout();
+            groupBox1.SuspendLayout();
             VertexContextMenu.SuspendLayout();
             EdgeContextMenu.SuspendLayout();
             SuspendLayout();
             // 
             // panel
             // 
+            panel.Controls.Add(panel1);
             panel.Dock = DockStyle.Fill;
             panel.Location = new Point(0, 0);
             panel.Margin = new Padding(3, 2, 3, 2);
@@ -50,6 +58,49 @@
             panel.MouseDown += panel_MouseDown;
             panel.MouseMove += panel_MouseMove;
             panel.MouseUp += panel_MouseUp;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(groupBox1);
+            panel1.Location = new Point(3, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(160, 84);
+            panel1.TabIndex = 0;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(radioButton2);
+            groupBox1.Controls.Add(radioButton1);
+            groupBox1.Location = new Point(3, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(154, 77);
+            groupBox1.TabIndex = 0;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Drawing Type";
+            // 
+            // radioButton2
+            // 
+            radioButton2.AutoSize = true;
+            radioButton2.Location = new Point(6, 47);
+            radioButton2.Name = "radioButton2";
+            radioButton2.Size = new Size(84, 19);
+            radioButton2.TabIndex = 1;
+            radioButton2.Text = "Bresenham";
+            radioButton2.UseVisualStyleBackColor = true;
+            radioButton2.CheckedChanged += radioButton2_CheckedChanged;
+            // 
+            // radioButton1
+            // 
+            radioButton1.AutoSize = true;
+            radioButton1.Checked = true;
+            radioButton1.Location = new Point(6, 22);
+            radioButton1.Name = "radioButton1";
+            radioButton1.Size = new Size(101, 19);
+            radioButton1.TabIndex = 0;
+            radioButton1.TabStop = true;
+            radioButton1.Text = "Biblio drawing";
+            radioButton1.UseVisualStyleBackColor = true;
+            radioButton1.CheckedChanged += radioButton1_CheckedChanged;
             // 
             // VertexContextMenu
             // 
@@ -68,12 +119,12 @@
             // 
             EdgeContextMenu.Items.AddRange(new ToolStripItem[] { addVertexToolStripMenuItem });
             EdgeContextMenu.Name = "EdgeContextMenu";
-            EdgeContextMenu.Size = new Size(181, 48);
+            EdgeContextMenu.Size = new Size(132, 26);
             // 
             // addVertexToolStripMenuItem
             // 
             addVertexToolStripMenuItem.Name = "addVertexToolStripMenuItem";
-            addVertexToolStripMenuItem.Size = new Size(180, 22);
+            addVertexToolStripMenuItem.Size = new Size(131, 22);
             addVertexToolStripMenuItem.Text = "Add vertex";
             addVertexToolStripMenuItem.Click += addVertexToolStripMenuItem_Click;
             // 
@@ -86,6 +137,10 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "Form1";
             Text = "Form1";
+            panel.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             VertexContextMenu.ResumeLayout(false);
             EdgeContextMenu.ResumeLayout(false);
             ResumeLayout(false);
@@ -98,5 +153,9 @@
         private ToolStripMenuItem deleteVertexToolStripMenuItem;
         private ContextMenuStrip EdgeContextMenu;
         private ToolStripMenuItem addVertexToolStripMenuItem;
+        private Panel panel1;
+        private GroupBox groupBox1;
+        private RadioButton radioButton2;
+        private RadioButton radioButton1;
     }
 }

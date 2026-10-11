@@ -1,6 +1,7 @@
 using GK.enums;
 using GK.model;
 using GK.objects;
+using GK.drawing;
 
 namespace GK
 {
@@ -9,6 +10,7 @@ namespace GK
         List<Polygon> polygons = new List<Polygon>();
         FullScreen fullScreen;
         Creator creator;
+        Drawer drawer = new Drawer();
         public DraggingType draggingType { get; set; } = DraggingType.None;
         Vertex? draggedVertex = null;
         Polygon? draggedPolygon = null;
@@ -28,7 +30,6 @@ namespace GK
 
         private void panel_Paint(object sender, PaintEventArgs e)
         {
-            Drawer drawer = new Drawer();
             foreach (Polygon p in polygons)
             {
                 drawer.DrawPolygon(p, e.Graphics);
@@ -138,6 +139,24 @@ namespace GK
             menuEdge = null;
             menuPolygon = null;
             panel.Invalidate();
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton1.Checked)
+            {
+                drawer.lineDrawer = new LibraryLineDrawer();
+                panel.Invalidate();
+            }
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton2.Checked)
+            {
+                drawer.lineDrawer = new BresenhamLineDrawer();
+                panel.Invalidate();
+            }
         }
     }
 }
