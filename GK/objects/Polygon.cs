@@ -8,7 +8,7 @@ using GK.algorithms;
 
 namespace GK.objects
 {
-    internal class Polygon
+    public class Polygon
     {
 
         public List<Vertex> vertices { get; set; }

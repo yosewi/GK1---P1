@@ -7,7 +7,7 @@ namespace GK
 {
     public partial class Form1 : Form
     {
-        List<Polygon> polygons = new List<Polygon>();
+        Space space;
         FullScreen fullScreen;
         Creator creator;
         Drawer drawer = new Drawer();
@@ -24,16 +24,12 @@ namespace GK
             InitializeComponent();
             fullScreen = new FullScreen(this);
             creator = new Creator();
-            polygons.Add(creator.createTriangle());
-            polygons.Add(creator.createpoli());
+            space = creator.CreateSpace();
         }
 
         private void panel_Paint(object sender, PaintEventArgs e)
         {
-            foreach (Polygon p in polygons)
-            {
-                drawer.DrawPolygon(p, e.Graphics);
-            }
+            drawer.DrawSpace(space, e.Graphics);
         }
 
         private void panel_MouseMove(object sender, MouseEventArgs e)
@@ -65,25 +61,25 @@ namespace GK
         {
             if (e.Button == MouseButtons.Right)
             {
-                for (int i = polygons.Count - 1; i >= 0; i--)
+                for (int i = space.polygons.Count - 1; i >= 0; i--)
                 {
-                    Vertex? vertex = polygons[i].ClickedVertex(e.X, e.Y, 8);
+                    Vertex? vertex = space.polygons[i].ClickedVertex(e.X, e.Y, 8);
                     if (vertex != null)
                     {
                         menuVertex = vertex;
-                        menuPolygon = polygons[i];
+                        menuPolygon = space.polygons[i];
                         VertexContextMenu.Show(panel, e.Location);
                         return;
                     }
                 }
 
-                for (int i = polygons.Count - 1; i >= 0; i--)
+                for (int i = space.polygons.Count - 1; i >= 0; i--)
                 {
-                    Edge? edge = polygons[i].ClickedEdge(e.X, e.Y, 6);
+                    Edge? edge = space.polygons[i].ClickedEdge(e.X, e.Y, 6);
                     if (edge != null)
                     {
                         menuEdge = edge;
-                        menuPolygon = polygons[i];
+                        menuPolygon = space.polygons[i];
                         EdgeContextMenu.Show(panel, e.Location);
                         return;
                     }
@@ -96,9 +92,9 @@ namespace GK
                 return;
             }
 
-            for (int i = polygons.Count - 1; i >= 0; i--)
+            for (int i = space.polygons.Count - 1; i >= 0; i--)
             {
-                Vertex? vertex = polygons[i].ClickedVertex(e.X, e.Y, 8);
+                Vertex? vertex = space.polygons[i].ClickedVertex(e.X, e.Y, 8);
                 if (vertex != null)
                 {
                     draggedVertex = vertex;
@@ -107,11 +103,11 @@ namespace GK
                 }
             }
 
-            for (int i = polygons.Count - 1; i >= 0; i--)
+            for (int i = space.polygons.Count - 1; i >= 0; i--)
             {
-                if (polygons[i].IsInside(e.X, e.Y))
+                if (space.polygons[i].IsInside(e.X, e.Y))
                 {
-                    draggedPolygon = polygons[i];
+                    draggedPolygon = space.polygons[i];
                     lastMousePosition = e.Location;
                     draggingType = DraggingType.MovingPolygon;
                     return;
@@ -123,7 +119,14 @@ namespace GK
         {
             if (menuPolygon != null && menuVertex != null)
             {
-                menuPolygon.DeleteVertex(menuVertex);
+                Edge e1 = menuVertex.firstEdge;
+                Edge e2 = menuVertex.secondEdge;
+
+                if (menuPolygon.DeleteVertex(menuVertex))
+                {
+                    space.RemoveConstraintsOfEdge(e1);
+                    space.RemoveConstraintsOfEdge(e2);
+                }
             }
             menuVertex = null;
             menuPolygon = null;
@@ -134,6 +137,7 @@ namespace GK
         {
             if (menuPolygon != null && menuEdge != null)
             {
+                space.RemoveConstraintsOfEdge(menuEdge);
                 menuPolygon.AddVertexOnEdge(menuEdge);
             }
             menuEdge = null;

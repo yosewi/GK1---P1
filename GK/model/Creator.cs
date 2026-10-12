@@ -1,4 +1,5 @@
-﻿using GK.objects;
+﻿using GK.constraints;
+using GK.objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,18 @@ namespace GK.model
     {
         public Creator() { }
 
-        public Polygon createTriangle()
+        public Space CreateSpace()
+        {
+            Space space = new Space();
+            Polygon triangle = createTriangle();
+            Polygon poli = createpoli();
+            space.polygons.Add(triangle);
+            space.polygons.Add(poli);
+
+            return space;
+        }
+
+        private Polygon createTriangle()
         {
             List<Vertex> vertices = new List<Vertex>
             {
@@ -22,7 +34,7 @@ namespace GK.model
             return new Polygon(vertices);
         }
 
-        public Polygon createpoli()
+        private Polygon createpoli()
         {
             List<Vertex> vertices = new List<Vertex>
             {

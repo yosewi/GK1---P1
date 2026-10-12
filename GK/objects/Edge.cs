@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GK.algorithms;
+using GK.constraints;
 
 namespace GK.objects
 {
@@ -11,6 +12,7 @@ namespace GK.objects
     {
         public Vertex startVertex { get; set; }
         public Vertex endVertex { get; set; }
+        public List<Constraint> constraints { get; } = new List<Constraint>();
 
         public Edge(Vertex startVertex, Vertex endVertex)
         {
