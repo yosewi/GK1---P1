@@ -15,6 +15,7 @@ namespace GK.drawing
             int bx = (int)Math.Round(x2);
             int by = (int)Math.Round(y2);
 
+            // zamieniamy osie x i y, jak jest stroma linia
             bool inverse = Math.Abs(bx - ax) < Math.Abs(by - ay);
 
             using (SolidBrush bruh = new SolidBrush(color))
@@ -25,6 +26,7 @@ namespace GK.drawing
                     (bx, by) = (by, bx);
                 }
 
+                // pętla algorytmu idzie zawsze w prawo, więc jeśli punkt A jest po prawej stronie punktu B, to je zamieniamy
                 if (ax > bx)
                 {
                     (ax, bx) = (bx, ax);
@@ -34,6 +36,7 @@ namespace GK.drawing
                 int dx = bx - ax;
                 int dy = by - ay;
 
+                // kierunek kroku w osi y
                 int direction = -1;
                 if(dy >= 0)
                 {

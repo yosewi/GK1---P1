@@ -162,5 +162,17 @@ namespace GK
                 panel.Invalidate();
             }
         }
+
+        private void bezierOnoffToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (menuEdge != null)
+            {
+                space.RemoveConstraintsOfEdge(menuEdge);
+                menuEdge.SelectBezier();
+            }
+            menuEdge = null;
+            menuPolygon = null;
+            panel.Invalidate();
+        }
     }
 }

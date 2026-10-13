@@ -74,6 +74,20 @@ namespace GK.objects
                 v.x += x;
                 v.y += y;
             }
+
+            foreach (Edge e in edges)
+            {
+                if (e.controlPoint1 != null)
+                {
+                    e.controlPoint1.x += x;
+                    e.controlPoint1.y += y;
+                }
+                if (e.controlPoint2 != null)
+                {
+                    e.controlPoint2.x += x;
+                    e.controlPoint2.y += y;
+                }
+            }
         }
 
         public bool DeleteVertex(Vertex v)

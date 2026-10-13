@@ -38,6 +38,7 @@
             deleteVertexToolStripMenuItem = new ToolStripMenuItem();
             EdgeContextMenu = new ContextMenuStrip(components);
             addVertexToolStripMenuItem = new ToolStripMenuItem();
+            bezierOnoffToolStripMenuItem = new ToolStripMenuItem();
             panel.SuspendLayout();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -117,16 +118,23 @@
             // 
             // EdgeContextMenu
             // 
-            EdgeContextMenu.Items.AddRange(new ToolStripItem[] { addVertexToolStripMenuItem });
+            EdgeContextMenu.Items.AddRange(new ToolStripItem[] { addVertexToolStripMenuItem, bezierOnoffToolStripMenuItem });
             EdgeContextMenu.Name = "EdgeContextMenu";
-            EdgeContextMenu.Size = new Size(132, 26);
+            EdgeContextMenu.Size = new Size(181, 70);
             // 
             // addVertexToolStripMenuItem
             // 
             addVertexToolStripMenuItem.Name = "addVertexToolStripMenuItem";
-            addVertexToolStripMenuItem.Size = new Size(131, 22);
+            addVertexToolStripMenuItem.Size = new Size(180, 22);
             addVertexToolStripMenuItem.Text = "Add vertex";
             addVertexToolStripMenuItem.Click += addVertexToolStripMenuItem_Click;
+            // 
+            // bezierOnoffToolStripMenuItem
+            // 
+            bezierOnoffToolStripMenuItem.Name = "bezierOnoffToolStripMenuItem";
+            bezierOnoffToolStripMenuItem.Size = new Size(180, 22);
+            bezierOnoffToolStripMenuItem.Text = "Bezier on/off";
+            bezierOnoffToolStripMenuItem.Click += bezierOnoffToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -157,5 +165,6 @@
         private GroupBox groupBox1;
         private RadioButton radioButton2;
         private RadioButton radioButton1;
+        private ToolStripMenuItem bezierOnoffToolStripMenuItem;
     }
 }
