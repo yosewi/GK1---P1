@@ -11,5 +11,6 @@ namespace GK.enums
         None,
         MovingPolygon,
         MovingVertex,
+        MovingControlPoint,
     }
 }

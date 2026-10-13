@@ -49,6 +49,22 @@ namespace GK.objects
             return null;
         }
 
+        public ControlPoint? ClickedControlPoint(double x, double y, double radius)
+        {
+            foreach (Edge e in edges)
+            {
+                if (e.controlPoint1 != null && e.controlPoint1.IsHit(x, y, radius))
+                {
+                    return e.controlPoint1;
+                }
+                if (e.controlPoint2 != null && e.controlPoint2.IsHit(x, y, radius))
+                {
+                    return e.controlPoint2;
+                }
+            }
+            return null;
+        }
+
         public bool IsInside(double x, double y)
         {
             double minX = double.MaxValue;

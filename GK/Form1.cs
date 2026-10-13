@@ -18,6 +18,7 @@ namespace GK
         Polygon? menuPolygon = null;
         Edge? menuEdge = null;
         Point lastMousePosition;
+        ControlPoint? draggedControlPoint = null;
 
         public Form1()
         {
@@ -48,6 +49,12 @@ namespace GK
                 lastMousePosition = e.Location;
                 panel.Invalidate();
             }
+            else if (draggingType == DraggingType.MovingControlPoint && draggedControlPoint != null)
+            {
+                draggedControlPoint.x = e.X;
+                draggedControlPoint.y = e.Y;
+                panel.Invalidate();
+            }
         }
 
         private void panel_MouseUp(object sender, MouseEventArgs e)
@@ -55,6 +62,7 @@ namespace GK
             draggingType = DraggingType.None;
             draggedVertex = null;
             draggedPolygon = null;
+            draggedControlPoint = null;
         }
 
         private void panel_MouseDown(object sender, MouseEventArgs e)
@@ -90,6 +98,17 @@ namespace GK
             if (e.Button != MouseButtons.Left)
             {
                 return;
+            }
+
+            for (int i = space.polygons.Count - 1; i >= 0; i--)
+            {
+                ControlPoint? controlPoint = space.polygons[i].ClickedControlPoint(e.X, e.Y, 8);
+                if (controlPoint != null)
+                {
+                    draggedControlPoint = controlPoint;
+                    draggingType = DraggingType.MovingControlPoint;
+                    return;
+                }
             }
 
             for (int i = space.polygons.Count - 1; i >= 0; i--)
