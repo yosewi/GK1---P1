@@ -26,6 +26,19 @@ namespace GK.objects
 
         public bool IsHit(double x, double y, double radius)
         {
+            if (type == EdgeType.Bezier)
+            {
+                List<(double x, double y)> points = BezierCurve.ComputePoints(startVertex, controlPoint1!, controlPoint2!, endVertex);
+                for (int i = 0; i < points.Count - 1; i++)
+                {
+                    if (Geometry.IsNearEdge(x, y, points[i].x, points[i].y, points[i + 1].x, points[i + 1].y, radius))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             return Geometry.IsNearEdge(x, y, startVertex.x, startVertex.y, endVertex.x, endVertex.y, radius);
         }
 
