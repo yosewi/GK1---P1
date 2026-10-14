@@ -1,7 +1,8 @@
+using GK.constraints;
+using GK.drawing;
 using GK.enums;
 using GK.model;
 using GK.objects;
-using GK.drawing;
 
 namespace GK
 {
@@ -188,6 +189,56 @@ namespace GK
             {
                 space.RemoveConstraintsOfEdge(menuEdge);
                 menuEdge.SelectBezier();
+            }
+            menuEdge = null;
+            menuPolygon = null;
+            panel.Invalidate();
+        }
+
+        private void setLengthToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (menuEdge == null)
+            {
+                return;
+            }
+
+            if (menuEdge.type == EdgeType.Bezier)
+            {
+                MessageBox.Show("Nie można ustawić długości krawędzi Béziera.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                menuEdge = null;
+                menuPolygon = null;
+                return;
+            }
+
+            using (LengthDialog dialog = new LengthDialog(menuEdge.Length))
+            {
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    foreach (Constraint c in menuEdge.constraints.ToList())
+                    {
+                        if (c is LengthConstraint)
+                        {
+                            space.RemoveConstraint(c);
+                        }
+                    }
+
+                    LengthConstraint constraint = new LengthConstraint(menuEdge, dialog.Value);
+                    space.AddConstraint(constraint);
+
+                    constraint.Fix(menuEdge.startVertex);
+                }
+            }
+
+            menuEdge = null;
+            menuPolygon = null;
+            panel.Invalidate();
+        }
+
+        private void removeConstraintsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (menuEdge != null)
+            {
+                space.RemoveConstraintsOfEdge(menuEdge);
             }
             menuEdge = null;
             menuPolygon = null;
