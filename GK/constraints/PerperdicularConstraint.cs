@@ -25,5 +25,14 @@ namespace GK.constraints
         public override IEnumerable<Edge> Edges => new[] { first, second };
 
         public override string Label => $"⊥{id}";
+
+        public override bool IsDone()
+        {
+            return true;
+        }
+
+        public override void Fix(Vertex fixedVertex)
+        {
+        }
     }
 }

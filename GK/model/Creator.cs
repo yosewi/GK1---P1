@@ -19,6 +19,9 @@ namespace GK.model
             Polygon poli = createpoli();
             space.polygons.Add(triangle);
             space.polygons.Add(poli);
+            LengthConstraint test = new LengthConstraint(triangle.edges[0], 300);
+            space.AddConstraint(test);
+            test.Fix(triangle.edges[0].startVertex);
 
             return space;
         }

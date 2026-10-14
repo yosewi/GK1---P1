@@ -24,6 +24,13 @@ namespace GK.objects
             this.endVertex = endVertex;
         }
 
+        public double Length => Geometry.Distance(startVertex.x, startVertex.y, endVertex.x, endVertex.y);
+
+        public Vertex OtherVertex(Vertex v)
+        {
+            return v == startVertex ? endVertex : startVertex;
+        }
+
         public bool IsHit(double x, double y, double radius)
         {
             if (type == EdgeType.Bezier)
