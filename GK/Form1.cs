@@ -227,7 +227,10 @@ namespace GK
                     space.AddConstraint(constraint);
 
                     Vertex start = menuEdge.startVertex;
-                    ConstraintsChecker.MoveVertex(menuPolygon!, start, start.x, start.y);
+                    if(!ConstraintsChecker.MoveVertex(menuPolygon!, start, start.x, start.y))
+                    {
+                        MessageBox.Show("Nie da się ustawić takiej długości przy obecnych ograniczeniach", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
 
