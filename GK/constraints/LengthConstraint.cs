@@ -29,14 +29,14 @@ namespace GK.constraints
             return Math.Abs(edge.Length - length) < Epsilon;
         }
 
-        public override void Fix(Vertex fixedVertex)
+        // przesuwa drugi wierzchołek krawędzi tak, aby zachować długość krawędzi
+        public override void Fix(Vertex movedVertex)
         {
-            Vertex other = edge.OtherVertex(fixedVertex);
+            Vertex other = edge.OtherVertex(movedVertex);
 
-            double dx = other.x - fixedVertex.x;
-            double dy = other.y - fixedVertex.y;
+            double dx = other.x - movedVertex.x;
+            double dy = other.y - movedVertex.y;
             double currentLength = Math.Sqrt(dx * dx + dy * dy);
-
 
             if (currentLength < 1e-9)
             {
@@ -45,8 +45,8 @@ namespace GK.constraints
                 currentLength = 1;
             }
 
-            other.x = fixedVertex.x + dx / currentLength * length;
-            other.y = fixedVertex.y + dy / currentLength * length;
+            other.x = movedVertex.x + dx / currentLength * length;
+            other.y = movedVertex.y + dy / currentLength * length;
         }
     }
 }

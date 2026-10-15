@@ -1,3 +1,4 @@
+using GK.algorithms;
 using GK.constraints;
 using GK.drawing;
 using GK.enums;
@@ -36,10 +37,9 @@ namespace GK
 
         private void panel_MouseMove(object sender, MouseEventArgs e)
         {
-            if (draggingType == DraggingType.MovingVertex && draggedVertex != null)
+            if (draggingType == DraggingType.MovingVertex && draggedVertex != null && draggedPolygon != null)
             {
-                draggedVertex.x = e.X;
-                draggedVertex.y = e.Y;
+                ConstraintsChecker.MoveVertex(draggedPolygon, draggedVertex, e.X, e.Y);
                 panel.Invalidate();
             }
             else if (draggingType == DraggingType.MovingPolygon && draggedPolygon != null)
@@ -118,6 +118,7 @@ namespace GK
                 if (vertex != null)
                 {
                     draggedVertex = vertex;
+                    draggedPolygon = space.polygons[i];
                     draggingType = DraggingType.MovingVertex;
                     return;
                 }
@@ -225,7 +226,8 @@ namespace GK
                     LengthConstraint constraint = new LengthConstraint(menuEdge, dialog.Value);
                     space.AddConstraint(constraint);
 
-                    constraint.Fix(menuEdge.startVertex);
+                    Vertex start = menuEdge.startVertex;
+                    ConstraintsChecker.MoveVertex(menuPolygon!, start, start.x, start.y);
                 }
             }
 
