@@ -13,6 +13,8 @@ namespace GK.objects
         public double y { get; set; }
         public Edge firstEdge { get; set; }
         public Edge secondEdge { get; set; }
+        public double oldX { get; set; }
+        public double oldY { get; set; }
 
         public Vertex(double x, double y)
         {

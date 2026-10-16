@@ -46,32 +46,33 @@ namespace GK.constraints
             return Math.Abs(cos) < Epsilon;
         }
 
-        public override void Fix(Edge edge, Vertex controlledVertex)
+        public override void Fix(Edge edge, Vertex fixedVertex)
         {
-            Edge edgeToFix = OtherEdge(edge);
-            Vertex vertexToMove = edge.OtherVertex(controlledVertex);
+            // wzorzec - druga krawędź z pary
+            Edge referenceEdge = OtherEdge(edge);
+            Vertex vertexToMove = edge.OtherVertex(fixedVertex);
 
-            double edgeToFixLength = edgeToFix.Length;
-            if (edgeToFixLength < 1e-9)
+            double referenceLength = referenceEdge.Length;
+            if (referenceLength < 1e-9)
             {
                 return;
             }
 
-            double edgeToFixXdif = edgeToFix.endVertex.x - edgeToFix.startVertex.x;
-            double edgeToFixYdif = edgeToFix.endVertex.y - edgeToFix.startVertex.y;
+            double referenceXdif = referenceEdge.endVertex.x - referenceEdge.startVertex.x;
+            double referenceYdif = referenceEdge.endVertex.y - referenceEdge.startVertex.y;
 
-            // prostopadły wektor do edgeToFix
-            double px = -edgeToFixYdif / edgeToFixLength;
-            double py = edgeToFixXdif / edgeToFixLength;
+            // kierunek prostopadły do wzorca
+            double px = -referenceYdif / referenceLength;
+            double py = referenceXdif / referenceLength;
 
-            double length = edge.Length;
+            double length = NewLength(fixedVertex, vertexToMove);
 
-            // liczy 2 możliwe punkty do przesunięcia vertexToMove, które są prostopadłe do edgeToFix
+            // liczy 2 możliwe punkty do przesunięcia vertexToMove, które są prostopadłe do wzorca
             // wybiera ten, który jest bliżej aktualnej pozycji vertexToMove
-            double ax = controlledVertex.x + px * length;
-            double ay = controlledVertex.y + py * length;
-            double bx = controlledVertex.x - px * length;
-            double by = controlledVertex.y - py * length;
+            double ax = fixedVertex.x + px * length;
+            double ay = fixedVertex.y + py * length;
+            double bx = fixedVertex.x - px * length;
+            double by = fixedVertex.y - py * length;
 
             double distanceToA = Geometry.Distance(vertexToMove.x, vertexToMove.y, ax, ay);
             double distanceToB = Geometry.Distance(vertexToMove.x, vertexToMove.y, bx, by);
@@ -88,6 +89,13 @@ namespace GK.constraints
             }
         }
 
+        // nextEdge - krawędź, którą będziemy sprawdzać zaraz po obecnej
+        // jeśli to nasza para, prostopadłość poprawi się dopiero tam (róg zostaje na miejscu)
+        public override bool CanWaitForFix(Edge nextEdge)
+        {
+            return nextEdge == first || nextEdge == second;
+        }
+
         private Edge OtherEdge(Edge edge)
         {
             if (edge == first)
@@ -95,6 +103,26 @@ namespace GK.constraints
                 return second;
             }
             return first;
+        }
+
+        // jak długa ma być krawędź po obrocie
+        private static double NewLength(Vertex fixedVertex, Vertex vertexToMove)
+        {
+            // czy stały wierzchołek przesunął się od początku ruchu (porównujemy go z nim samym sprzed ruchu)
+            bool fixedVertexMoved = fixedVertex.x != fixedVertex.oldX || fixedVertex.y != fixedVertex.oldY;
+
+            if (fixedVertexMoved)
+            {
+                // przesunął się -> krawędź jedzie razem z nim i zachowuje długość sprzed ruchu
+                double oldLength = Geometry.Distance(fixedVertex.oldX, fixedVertex.oldY, vertexToMove.oldX, vertexToMove.oldY);
+                if (oldLength > 1e-9)
+                {
+                    return oldLength;
+                }
+            }
+
+            // stoi -> krawędź tylko się obraca, długość bez zmian
+            return Geometry.Distance(fixedVertex.x, fixedVertex.y, vertexToMove.x, vertexToMove.y);
         }
     }
 }

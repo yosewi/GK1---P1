@@ -12,6 +12,10 @@ namespace GK.constraints
         public abstract IEnumerable<Edge> Edges { get; }
         public abstract string Label { get; }
         public abstract bool IsDone();
-        public abstract void Fix(Edge edge, Vertex fixedVertex);
+        public abstract void Fix(Edge edge, Vertex controlledVertex);
+        public virtual bool CanWaitForFix(Edge edge)
+        {
+            return false;
+        }
     }
 }

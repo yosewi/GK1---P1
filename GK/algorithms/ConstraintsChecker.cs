@@ -15,9 +15,7 @@ namespace GK.algorithms
 
         public static bool MoveVertex(Polygon polygon, Vertex vertex, double x, double y)
         {
-            List<(double x, double y)> backup = Backup(polygon);
-            double oldX = vertex.x;
-            double oldY = vertex.y;
+            Backup(polygon);
 
             vertex.x = x;
             vertex.y = y;
@@ -32,27 +30,26 @@ namespace GK.algorithms
                 }
             }
 
-            RestoreBackup(polygon, backup);
-            polygon.Move(x - oldX, y - oldY);
+            RestoreBackup(polygon);
+            polygon.Move(x - vertex.oldX, y - vertex.oldY);
             return false;
         }
 
-        private static List<(double x, double y)> Backup(Polygon polygon)
+        private static void Backup(Polygon polygon)
         {
-            List<(double x, double y)> backup = new List<(double x, double y)>();
             foreach (Vertex v in polygon.vertices)
             {
-                backup.Add((v.x, v.y));
+                v.oldX = v.x;
+                v.oldY = v.y;
             }
-            return backup;
         }
 
-        private static void RestoreBackup(Polygon polygon, List<(double x, double y)> backup)
+        private static void RestoreBackup(Polygon polygon)
         {
-            for (int i = 0; i < polygon.vertices.Count; i++)
+            foreach(Vertex v in polygon.vertices)
             {
-                polygon.vertices[i].x = backup[i].x;
-                polygon.vertices[i].y = backup[i].y;
+                v.x = v.oldX;
+                v.y = v.oldY;
             }
         }
 
@@ -77,7 +74,7 @@ namespace GK.algorithms
                     return false;
                 }
 
-                FixEdge(edge, fixedVertex);
+                FixEdge(edge, fixedVertex, NextEdge(vertexToMove, direction));
 
                 fixedVertex = vertexToMove;
                 stepsLeft--;
@@ -107,12 +104,22 @@ namespace GK.algorithms
             return true;
         }
 
-        private static void FixEdge(Edge edge, Vertex fixedVertex)
+        private static void FixEdge(Edge edge, Vertex fixedVertex, Edge nextEdge)
         {
-            foreach (Constraint c in edge.constraints)
+            for (int round = 0; round < 2; round++)
             {
-                if (!c.IsDone())
+                foreach (Constraint c in edge.constraints)
                 {
+                    if (c.IsDone())
+                    {
+                        continue;
+                    }
+
+                    if (c.CanWaitForFix(nextEdge))
+                    {
+                        continue;
+                    }
+
                     c.Fix(edge, fixedVertex);
                 }
             }
