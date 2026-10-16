@@ -113,7 +113,7 @@ namespace GK.algorithms
             {
                 if (!c.IsDone())
                 {
-                    c.Fix(fixedVertex);
+                    c.Fix(edge, fixedVertex);
                 }
             }
         }

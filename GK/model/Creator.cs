@@ -21,7 +21,10 @@ namespace GK.model
             space.polygons.Add(poli);
             LengthConstraint test = new LengthConstraint(triangle.edges[0], 300);
             space.AddConstraint(test);
-            test.Fix(triangle.edges[0].startVertex);
+            test.Fix(triangle.edges[0], triangle.edges[0].startVertex);
+            PerpendicularConstraint test2 = new PerpendicularConstraint(poli.edges[0], poli.edges[1]);
+            space.AddConstraint(test2);
+            test2.Fix(poli.edges[0], poli.edges[0].startVertex);
 
             return space;
         }

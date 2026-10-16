@@ -30,7 +30,7 @@ namespace GK.constraints
         }
 
         // przesuwa drugi wierzchołek krawędzi tak, aby zachować długość krawędzi
-        public override void Fix(Vertex movedVertex)
+        public override void Fix(Edge edge, Vertex movedVertex)
         {
             Vertex other = edge.OtherVertex(movedVertex);
 
