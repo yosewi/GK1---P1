@@ -93,7 +93,7 @@ namespace GK.model
 
         private void DrawBezierCurve(Graphics graphics, Vertex v0, ControlPoint v1, ControlPoint v2, Vertex v3, Color color)
         {
-            List<(double x, double y)> points = BezierCurve.ComputePoints(v0, v1, v2, v3);
+            List<(double x, double y)> points = BezierCurve.FindPoints(v0, v1, v2, v3);
 
             for (int i = 0; i < points.Count - 1; i++)
             {

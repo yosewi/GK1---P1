@@ -8,7 +8,7 @@ namespace GK.algorithms
 {
     internal static class BrezenhamLine
     {
-        public static List<(int x, int y)> ComputePixels(double x1, double y1, double x2, double y2)
+        public static List<(int x, int y)> FindPixels(double x1, double y1, double x2, double y2)
         {
             List<(int x, int y)> pixels = new List<(int x, int y)>();
 
