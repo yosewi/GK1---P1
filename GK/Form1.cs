@@ -198,7 +198,7 @@ namespace GK
 
         private void setLengthToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (menuEdge == null)
+            if (menuEdge == null || menuPolygon == null)
             {
                 return;
             }
@@ -215,10 +215,12 @@ namespace GK
             {
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
+                    Constraint? existingConstraint = null;
                     foreach (Constraint c in menuEdge.constraints.ToList())
                     {
                         if (c is LengthConstraint)
                         {
+                            existingConstraint = c;
                             space.RemoveConstraint(c);
                         }
                     }
@@ -230,6 +232,11 @@ namespace GK
                     if(!ConstraintsChecker.MoveVertex(menuPolygon!, start, start.x, start.y))
                     {
                         MessageBox.Show("Nie da się ustawić takiej długości przy obecnych ograniczeniach", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                        if (existingConstraint != null)
+                        {
+                            space.AddConstraint(existingConstraint);
+                        }
                     }
                 }
             }

@@ -11,6 +11,8 @@ namespace GK.algorithms
 {
     internal static class ConstraintsChecker
     {
+        private static int maxSteps = 1000;
+
         public static bool MoveVertex(Polygon polygon, Vertex vertex, double x, double y)
         {
             List<(double x, double y)> backup = Backup(polygon);
@@ -20,12 +22,14 @@ namespace GK.algorithms
             vertex.x = x;
             vertex.y = y;
 
-            bool forwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Forward);
-            bool backwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Backward);
-
-            if (forwardOk && backwardOk)
+            for(int i =0; i < maxSteps; i++)
             {
-                return true;
+                bool forwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Forward);
+                bool backwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Backward);
+                if (forwardOk && backwardOk)
+                {
+                    return true;
+                }
             }
 
             RestoreBackup(polygon, backup);
