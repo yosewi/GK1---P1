@@ -124,5 +124,18 @@ namespace GK.constraints
             // stoi -> krawędź tylko się obraca, długość bez zmian
             return Geometry.Distance(fixedVertex.x, fixedVertex.y, vertexToMove.x, vertexToMove.y);
         }
+
+        // czy te dwie krawędzie mają już między sobą prostopadłość
+        public static bool Exists(Edge first, Edge second)
+        {
+            foreach (Constraint c in first.constraints)
+            {
+                if (c is PerpendicularConstraint && c.Edges.Contains(second))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

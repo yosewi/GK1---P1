@@ -21,6 +21,7 @@ namespace GK
         Edge? menuEdge = null;
         Point lastMousePosition;
         ControlPoint? draggedControlPoint = null;
+        Edge? perpendicularFirstEdge = null;
 
         public Form1()
         {
@@ -28,6 +29,7 @@ namespace GK
             fullScreen = new FullScreen(this);
             creator = new Creator();
             space = creator.CreateSpace();
+            KeyDown += Form1_KeyDown;
         }
 
         private void panel_Paint(object sender, PaintEventArgs e)
@@ -68,6 +70,19 @@ namespace GK
 
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
+            if (perpendicularFirstEdge != null)
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    FinishPerpendicular(space.ClickedEdge(e.X, e.Y, 6));
+                }
+                else
+                {
+                    CancelPerpendicular();
+                }
+                return;
+            }
+
             if (e.Button == MouseButtons.Right)
             {
                 for (int i = space.polygons.Count - 1; i >= 0; i--)
@@ -89,6 +104,8 @@ namespace GK
                     {
                         menuEdge = edge;
                         menuPolygon = space.polygons[i];
+                        setLengthToolStripMenuItem.Enabled = edge.type == EdgeType.Line;
+                        perpendicularToToolStripMenuItem.Enabled = edge.type == EdgeType.Line;
                         EdgeContextMenu.Show(panel, e.Location);
                         return;
                     }
@@ -198,16 +215,8 @@ namespace GK
 
         private void setLengthToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (menuEdge == null || menuPolygon == null)
+            if (menuEdge == null)
             {
-                return;
-            }
-
-            if (menuEdge.type == EdgeType.Bezier)
-            {
-                MessageBox.Show("Nie można ustawić długości krawędzi Béziera.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                menuEdge = null;
-                menuPolygon = null;
                 return;
             }
 
@@ -225,20 +234,13 @@ namespace GK
                         }
                     }
 
-                    LengthConstraint constraint = new LengthConstraint(menuEdge, dialog.Value);
-                    space.AddConstraint(constraint);
-
-                    Vertex start = menuEdge.startVertex;
-                    if(!ConstraintsChecker.MoveVertex(menuPolygon!, start, start.x, start.y))
+                    if (!ConstraintsChecker.TryAddConstraint(space, new LengthConstraint(menuEdge, dialog.Value)))
                     {
-                        MessageBox.Show("Nie da się ustawić takiej długości przy obecnych ograniczeniach", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                        space.RemoveConstraint(constraint);
-
                         if (existingConstraint != null)
                         {
                             space.AddConstraint(existingConstraint);
                         }
+                        MessageBox.Show("Nie da się ustawić takiej długości przy obecnych ograniczeniach.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
             }
@@ -257,6 +259,75 @@ namespace GK
             menuEdge = null;
             menuPolygon = null;
             panel.Invalidate();
+        }
+
+        // zapamiętujemy pierwszą krawędź i czekamy na kliknięcie drugiej
+        private void perpendicularToToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (menuEdge != null)
+            {
+                perpendicularFirstEdge = menuEdge;
+                drawer.highlightedEdge = menuEdge;
+                panel.Cursor = Cursors.Cross;
+            }
+            menuEdge = null;
+            menuPolygon = null;
+            panel.Invalidate();
+        }
+
+        // kliknięto drugą krawędź albo i nie xd
+        private void FinishPerpendicular(Edge? secondEdge)
+        {
+            Edge firstEdge = perpendicularFirstEdge!;
+            CancelPerpendicular();   // wychodzimy z trybu wybierania, niezależnie od wyniku
+
+            if (secondEdge == null)
+            {
+                return;   // kliknięcie obok krawędzi = rezygnacja
+            }
+
+            if (secondEdge == firstEdge)
+            {
+                MessageBox.Show("Krawędź nie może być prostopadła do samej siebie.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (secondEdge.type == EdgeType.Bezier)
+            {
+                MessageBox.Show("Krawędź Béziera nie może mieć ograniczeń.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (PerpendicularConstraint.Exists(firstEdge, secondEdge))
+            {
+                MessageBox.Show("Te krawędzie już są prostopadłe.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            PerpendicularConstraint constraint = new PerpendicularConstraint(firstEdge, secondEdge);
+            if (!ConstraintsChecker.TryAddConstraint(space, constraint))
+            {
+                MessageBox.Show("Nie da się ustawić prostopadłości przy obecnych ograniczeniach.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            panel.Invalidate();
+        }
+
+        // wyjście z trybu wybierania drugiej krawędzi
+        private void CancelPerpendicular()
+        {
+            perpendicularFirstEdge = null;
+            drawer.highlightedEdge = null;
+            panel.Cursor = Cursors.Default;
+            panel.Invalidate();
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape && perpendicularFirstEdge != null)
+            {
+                CancelPerpendicular();
+            }
         }
     }
 }

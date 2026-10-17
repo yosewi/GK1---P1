@@ -30,7 +30,7 @@ namespace GK.algorithms
             {
                 bool forwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Forward);
                 bool backwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Backward);
-                if (forwardOk && backwardOk)
+                if (forwardOk && backwardOk && AllEdgesGood(polygon))
                 {
                     return true;
                 }
@@ -38,6 +38,33 @@ namespace GK.algorithms
 
             RestoreBackup(polygon);
             polygon.Move(x - vertex.oldX, y - vertex.oldY);
+            return false;
+        }
+
+        // Dodaje ograniczenie i od razu dopasowuje do niego kształt
+        // true  - ograniczenie dodane i spełnione
+        // false - nie da się. ograniczenie usunięte, kształty jak przed próbą
+        public static bool TryAddConstraint(Space space, Constraint constraint)
+        {
+            space.AddConstraint(constraint);
+
+            foreach (Edge edge in constraint.Edges)
+            {
+                Polygon? polygon = space.PolygonOf(edge);
+                if (polygon == null)
+                {
+                    continue;
+                }
+
+                // początek krawędzi w to samo miejsce
+                Vertex start = edge.startVertex;
+                if (MoveVertex(polygon, start, start.x, start.y))
+                {
+                    return true;
+                }
+            }
+
+            space.RemoveConstraint(constraint);
             return false;
         }
 
@@ -135,6 +162,19 @@ namespace GK.algorithms
                     c.Fix(edge, fixedVertex);
                 }
             }
+        }
+
+        // czy wszystkie krawędzie wielokąta mają spełnione ograniczenia
+        private static bool AllEdgesGood(Polygon polygon)
+        {
+            foreach (Edge edge in polygon.edges)
+            {
+                if (!IsEdgeGood(edge))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

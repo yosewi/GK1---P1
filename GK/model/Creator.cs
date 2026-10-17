@@ -20,8 +20,8 @@ namespace GK.model
             Polygon poli = createpoli();
             space.polygons.Add(triangle);
             space.polygons.Add(poli);
-            AddConstraint(space, triangle, new LengthConstraint(triangle.edges[0], 300));
-            AddConstraint(space, poli, new PerpendicularConstraint(poli.edges[0], poli.edges[1]));
+            ConstraintsChecker.TryAddConstraint(space, new LengthConstraint(triangle.edges[0], 300));
+            ConstraintsChecker.TryAddConstraint(space, new PerpendicularConstraint(poli.edges[0], poli.edges[1]));
 
             return space;
         }

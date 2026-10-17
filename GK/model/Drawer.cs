@@ -15,6 +15,7 @@ namespace GK.model
 {
     internal class Drawer
     {
+        public Edge? highlightedEdge { get; set; }
         private Pen dashedPen = new Pen(Color.Gray, 1) { DashStyle = DashStyle.Dash };
         public ILineDrawer lineDrawer { get; set; } = new LibraryLineDrawer();
         
@@ -44,7 +45,12 @@ namespace GK.model
                 }
                 else
                 {
-                    lineDrawer.DrawLine(graphics, edge.startVertex.x, edge.startVertex.y, edge.endVertex.x, edge.endVertex.y, Color.Black);
+                    Color color = Color.Black;
+                    if (edge == highlightedEdge)
+                    {
+                        color = Color.Red;
+                    }
+                    lineDrawer.DrawLine(graphics, edge.startVertex.x, edge.startVertex.y, edge.endVertex.x, edge.endVertex.y, color);
                 }
             }
 

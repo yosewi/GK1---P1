@@ -50,5 +50,32 @@ namespace GK.objects
             }
             return result;
         }
+
+        // w którym wielokącie leży krawędź
+        public Polygon? PolygonOf(Edge edge)
+        {
+            foreach (Polygon polygon in polygons)
+            {
+                if (polygon.edges.Contains(edge))
+                {
+                    return polygon;
+                }
+            }
+            return null;
+        }
+
+        // krawędź pod kursorem w dowolnym wielokącie
+        public Edge? ClickedEdge(double x, double y, double radius)
+        {
+            for (int i = polygons.Count - 1; i >= 0; i--)
+            {
+                Edge? edge = polygons[i].ClickedEdge(x, y, radius);
+                if (edge != null)
+                {
+                    return edge;
+                }
+            }
+            return null;
+        }
     }
 }
