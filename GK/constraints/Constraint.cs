@@ -12,8 +12,10 @@ namespace GK.constraints
         public abstract IEnumerable<Edge> Edges { get; }
         public abstract string Label { get; }
         public abstract bool IsDone();
-        public abstract void Fix(Edge edge, Vertex controlledVertex);
-        public virtual bool CanWaitForFix(Edge edge)
+        // poprawia krawędź edge: fixedVertex zostaje w miejscu, rusza się drugi koniec krawędzi
+        public abstract void Fix(Edge edge, Vertex fixedVertex);
+        // czy poprawianie może poczekać, aż dojdziemy do nextEdge (domyślnie nie)
+        public virtual bool CanWaitForFix(Edge nextEdge)
         {
             return false;
         }

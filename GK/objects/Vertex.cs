@@ -11,8 +11,8 @@ namespace GK.objects
     {
         public double x { get; set; }
         public double y { get; set; }
-        public Edge firstEdge { get; set; }
-        public Edge secondEdge { get; set; }
+        public Edge firstEdge { get; set; } // krawędź wchodząca do wierzchołka
+        public Edge secondEdge { get; set; } // krawędź wychodząca z wierzchołka
         public double oldX { get; set; }
         public double oldY { get; set; }
 

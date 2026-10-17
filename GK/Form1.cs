@@ -233,6 +233,8 @@ namespace GK
                     {
                         MessageBox.Show("Nie da się ustawić takiej długości przy obecnych ograniczeniach", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+                        space.RemoveConstraint(constraint);
+
                         if (existingConstraint != null)
                         {
                             space.AddConstraint(existingConstraint);

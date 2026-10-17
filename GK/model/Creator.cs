@@ -1,4 +1,5 @@
-﻿using GK.constraints;
+﻿using GK.algorithms;
+using GK.constraints;
 using GK.objects;
 using System;
 using System.Collections.Generic;
@@ -19,12 +20,8 @@ namespace GK.model
             Polygon poli = createpoli();
             space.polygons.Add(triangle);
             space.polygons.Add(poli);
-            LengthConstraint test = new LengthConstraint(triangle.edges[0], 300);
-            space.AddConstraint(test);
-            test.Fix(triangle.edges[0], triangle.edges[0].startVertex);
-            PerpendicularConstraint test2 = new PerpendicularConstraint(poli.edges[0], poli.edges[1]);
-            space.AddConstraint(test2);
-            test2.Fix(poli.edges[0], poli.edges[0].startVertex);
+            AddConstraint(space, triangle, new LengthConstraint(triangle.edges[0], 300));
+            AddConstraint(space, poli, new PerpendicularConstraint(poli.edges[0], poli.edges[1]));
 
             return space;
         }
@@ -55,5 +52,11 @@ namespace GK.model
             return new Polygon(vertices);
         }
 
+        private void AddConstraint(Space space, Polygon polygon, Constraint constraint)
+        {
+            space.AddConstraint(constraint);
+            Vertex start = constraint.Edges.First().startVertex;
+            ConstraintsChecker.MoveVertex(polygon, start, start.x, start.y);
+        }
     }
 }

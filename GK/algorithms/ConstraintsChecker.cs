@@ -9,10 +9,16 @@ using GK.constraints;
 
 namespace GK.algorithms
 {
+    // Zapamiętujemy stare pozycje wierzchołków -> stawiamy przeciągany wierzchołek pod kursorem ->
+    // idziemy w jedną stronę i od przeciąganego wierzchołka poprawiamy kolejne krawędzie, aż trafimy na dobrą krawędź lub
+    // wrócimy do przeciąganego wierzchołka -> to samo w drugą stronę. Jeśli w obu kierunkach udało się znaleźć dobrą krawędź, to ruch jest dozwolony.
+    // jak nie to w pętli maxAttempts razy powtarzamy. Jak dalej źle to cofamy i przesuwamy cały wielokąt.
     internal static class ConstraintsChecker
     {
-        private static int maxSteps = 1000;
+        private static int maxAttempts = 1000;
 
+        // true - ograniczenie spełnione
+        // false - nie i przesuwamy cały wielokąt
         public static bool MoveVertex(Polygon polygon, Vertex vertex, double x, double y)
         {
             Backup(polygon);
@@ -20,7 +26,7 @@ namespace GK.algorithms
             vertex.x = x;
             vertex.y = y;
 
-            for(int i =0; i < maxSteps; i++)
+            for(int i =0; i < maxAttempts; i++)
             {
                 bool forwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Forward);
                 bool backwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Backward);
@@ -53,9 +59,12 @@ namespace GK.algorithms
             }
         }
 
-        private static bool CheckingPolygon(Polygon polygon, Vertex movedVertex, CheckingDirection direction)
+        // sprawdzamy wielokąt w danym kierunku
+        // true - udało się znaleźć dobrą krawędź
+        // false - nie i trzeba przesunąć cały wielokąt
+        private static bool CheckingPolygon(Polygon polygon, Vertex draggedVertex, CheckingDirection direction)
         {
-            Vertex fixedVertex = movedVertex;
+            Vertex fixedVertex = draggedVertex; // wierzchołek który już stoi dobrze
             int stepsLeft = polygon.vertices.Count;
 
             while (stepsLeft > 0)
@@ -69,7 +78,7 @@ namespace GK.algorithms
 
                 Vertex vertexToMove = edge.OtherVertex(fixedVertex);
 
-                if (vertexToMove == movedVertex)
+                if (vertexToMove == draggedVertex)
                 {
                     return false;
                 }
@@ -104,8 +113,10 @@ namespace GK.algorithms
             return true;
         }
 
+        // nextEdge - krawędź ktora jest kolejna do sprawdzania
         private static void FixEdge(Edge edge, Vertex fixedVertex, Edge nextEdge)
         {
+            // dwa razy bo poprawienie jednego ograniczenia może zepsuć inne na krawędzi
             for (int round = 0; round < 2; round++)
             {
                 foreach (Constraint c in edge.constraints)
@@ -115,6 +126,7 @@ namespace GK.algorithms
                         continue;
                     }
 
+                    // poprawi się dopiero na następnej krawędzi
                     if (c.CanWaitForFix(nextEdge))
                     {
                         continue;
