@@ -70,8 +70,8 @@ namespace GK.objects
             double px = -dy;
             double py = dx;
 
-            controlPoint1 = new ControlPoint(startVertex.x + dx / 3 + px / 4, startVertex.y + dy / 3 + py / 4);
-            controlPoint2 = new ControlPoint(startVertex.x + 2 * dx / 3 + px / 4, startVertex.y + 2 * dy / 3 + py / 4);
+            controlPoint1 = new ControlPoint(startVertex.x + dx / 3 + px / 4, startVertex.y + dy / 3 + py / 4, startVertex);
+            controlPoint2 = new ControlPoint(startVertex.x + 2 * dx / 3 + px / 4, startVertex.y + 2 * dy / 3 + py / 4, endVertex);
 
             if (!startVertex.continuitySetByUser)
             {
