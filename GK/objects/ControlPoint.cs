@@ -14,7 +14,7 @@ namespace GK.objects
         // wierzchołek, przy którym leży ten punkt kontrolny
         public Vertex vertex { get; }
 
-        public ControlPoint(double x, double y)
+        public ControlPoint(double x, double y, Vertex vertex)
         {
             this.x = x;
             this.y = y;
