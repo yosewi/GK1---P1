@@ -52,10 +52,9 @@ namespace GK
                 lastMousePosition = e.Location;
                 panel.Invalidate();
             }
-            else if (draggingType == DraggingType.MovingControlPoint && draggedControlPoint != null)
+            else if (draggingType == DraggingType.MovingControlPoint && draggedControlPoint != null && draggedPolygon != null)
             {
-                draggedControlPoint.x = e.X;
-                draggedControlPoint.y = e.Y;
+                ConstraintsChecker.MoveControlPoint(draggedPolygon, draggedControlPoint, e.X, e.Y);
                 panel.Invalidate();
             }
         }
@@ -124,6 +123,7 @@ namespace GK
                 if (controlPoint != null)
                 {
                     draggedControlPoint = controlPoint;
+                    draggedPolygon = space.polygons[i];
                     draggingType = DraggingType.MovingControlPoint;
                     return;
                 }

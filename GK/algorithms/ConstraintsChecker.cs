@@ -43,6 +43,90 @@ namespace GK.algorithms
             return false;
         }
 
+        public static void MoveControlPoint(Polygon polygon, ControlPoint controlPoint, double x, double y)
+        {
+            controlPoint.x = x;
+            controlPoint.y = y;
+
+            Vertex vertex = controlPoint.vertex;
+            if (vertex.continuity == Continuity.G0)
+            {
+                return;
+            }
+
+            bool isOutgoing = vertex.secondEdge.controlPoint1 == controlPoint;
+
+            Edge otherEdge;
+            if (isOutgoing)
+            {
+                otherEdge = vertex.firstEdge;
+            }
+            else
+            {
+                otherEdge = vertex.secondEdge;
+            }
+
+            // po drugiej stronie też Bézier - dopasowujemy jego punkt kontrolny
+            if (otherEdge.type == EdgeType.Bezier)
+            {
+                if (isOutgoing)
+                {
+                    ContinuityFixer.FitIncomingControlPoint(vertex);
+                }
+                else
+                {
+                    ContinuityFixer.FitOutgoingControlPoint(vertex);
+                }
+                return;
+            }
+
+            // po drugiej stronie odcinek - ustawiamy go po przeciwnej stronie wierzchołka niż punkt kontrolny
+            double hx = vertex.x - controlPoint.x;
+            double hy = vertex.y - controlPoint.y;
+            double handleLength = Math.Sqrt(hx * hx + hy * hy);
+            if (handleLength < 1e-9)
+            {
+                return;
+            }
+
+            // długość odcinka: przy C1 wolny odcinek ma 3 * długość
+            // w pozostałych przypadkach zostaje stara
+            double newLength = otherEdge.Length;
+            if (vertex.continuity == Continuity.C1 && otherEdge.constraints.Count == 0)
+            {
+                newLength = 3 * handleLength;
+            }
+
+            Vertex farVertex = otherEdge.OtherVertex(vertex);
+            double targetX = vertex.x + hx / handleLength * newLength;
+            double targetY = vertex.y + hy / handleLength * newLength;
+
+            if (EdgeAcceptsVertexAt(otherEdge, farVertex, targetX, targetY))
+            {
+                MoveVertex(polygon, farVertex, targetX, targetY);
+            }
+            else
+            {
+                // ograniczenia odcinka nie pozwalają go obrócić,więc to punkt kontrolny dopasowuje się do odcinka
+                ContinuityFixer.FixVertex(vertex);
+            }
+        }
+
+        // czy ograniczenia krawędzi byłyby spełnione, gdyby wierzchołek stał w (x, y)?
+        private static bool EdgeAcceptsVertexAt(Edge edge, Vertex vertex, double x, double y)
+        {
+            double savedX = vertex.x;
+            double savedY = vertex.y;
+
+            vertex.x = x;
+            vertex.y = y;
+            bool good = IsEdgeGood(edge);
+
+            vertex.x = savedX;
+            vertex.y = savedY;
+            return good;
+        }
+
         // Dodaje ograniczenie i od razu dopasowuje do niego kształt
         // true  - ograniczenie dodane i spełnione
         // false - nie da się. ograniczenie usunięte, kształty jak przed próbą
@@ -198,5 +282,7 @@ namespace GK.algorithms
             controlPoint.x += controlPoint.vertex.x - controlPoint.vertex.oldX;
             controlPoint.y += controlPoint.vertex.y - controlPoint.vertex.oldY;
         }
+
+
     }
 }
