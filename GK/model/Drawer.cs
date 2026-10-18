@@ -33,6 +33,14 @@ namespace GK.model
                     DrawConstraintLabels(edge, graphics);
                 }
             }
+
+            foreach (Polygon polygon in space.polygons)
+            {
+                foreach (Vertex vertex in polygon.vertices)
+                {
+                    DrawContinuityLabel(vertex, graphics);
+                }
+            }
         }
 
         public void DrawPolygon(Polygon polygon, Graphics graphics)   
@@ -105,6 +113,15 @@ namespace GK.model
             {
                 lineDrawer.DrawLine(graphics, points[i].x, points[i].y, points[i + 1].x, points[i + 1].y, color);
             }
+        }
+
+        private void DrawContinuityLabel(Vertex vertex, Graphics graphics)
+        {
+            if (!vertex.HasBezierNeighbour)
+            {
+                return;
+            }
+            graphics.DrawString(vertex.continuity.ToString(), Label.DefaultFont, Brushes.DarkGreen, (float)vertex.x + 8, (float)vertex.y - 20);
         }
     }
 }

@@ -91,6 +91,12 @@ namespace GK
                     {
                         menuVertex = vertex;
                         menuPolygon = space.polygons[i];
+                        g0ToolStripMenuItem.Enabled = vertex.HasBezierNeighbour;
+                        g1ToolStripMenuItem.Enabled = vertex.HasBezierNeighbour;
+                        C1ToolStripMenuItem.Enabled = vertex.HasBezierNeighbour;
+                        g0ToolStripMenuItem.Checked = vertex.continuity == Continuity.G0;
+                        g1ToolStripMenuItem.Checked = vertex.continuity == Continuity.G1;
+                        C1ToolStripMenuItem.Checked = vertex.continuity == Continuity.C1;
                         VertexContextMenu.Show(panel, e.Location);
                         return;
                     }
@@ -164,6 +170,7 @@ namespace GK
                 {
                     space.RemoveConstraintsOfEdge(e1);
                     space.RemoveConstraintsOfEdge(e2);
+                    ContinuityFixer.FixPolygon(menuPolygon);
                 }
             }
             menuVertex = null;
@@ -177,6 +184,7 @@ namespace GK
             {
                 space.RemoveConstraintsOfEdge(menuEdge);
                 menuPolygon.AddVertexOnEdge(menuEdge);
+                ContinuityFixer.FixPolygon(menuPolygon);
             }
             menuEdge = null;
             menuPolygon = null;
@@ -328,6 +336,34 @@ namespace GK
             {
                 CancelPerpendicular();
             }
+        }
+
+        private void g0ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetContinuity(Continuity.G0);
+        }
+
+        private void g1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetContinuity(Continuity.G1);
+        }
+
+        private void C1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetContinuity(Continuity.C1);
+        }
+
+        private void SetContinuity(Continuity continuity)
+        {
+            if (menuVertex != null)
+            {
+                menuVertex.continuity = continuity;
+                menuVertex.continuitySetByUser = true;
+                ContinuityFixer.FixVertex(menuVertex);
+            }
+            menuVertex = null;
+            menuPolygon = null;
+            panel.Invalidate();
         }
     }
 }
