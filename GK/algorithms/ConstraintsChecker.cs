@@ -107,8 +107,8 @@ namespace GK.algorithms
             }
             else
             {
-                // ograniczenia odcinka nie pozwalają go obrócić,więc to punkt kontrolny dopasowuje się do odcinka
-                ContinuityFixer.FixVertex(vertex);
+                // odcinek nie może się obrócić (prostopadłość), wiec punkt kontrolny jeździ po przedłużeniu odcinka
+                SlideAlongLine(polygon, vertex, controlPoint, otherEdge, farVertex);
             }
         }
 
@@ -283,6 +283,43 @@ namespace GK.algorithms
             controlPoint.y += controlPoint.vertex.y - controlPoint.vertex.oldY;
         }
 
+        // Punkt kontrolny przy odcinku, którego nie da się obrócić.
+        private static void SlideAlongLine(Polygon polygon, Vertex vertex, ControlPoint controlPoint, Edge line, Vertex otherVertex)
+        {
+            // kierunek przedłużenia odcinka za wierzchołkiem
+            double dx = vertex.x - otherVertex.x;
+            double dy = vertex.y - otherVertex.y;
+            double lineLength = Math.Sqrt(dx * dx + dy * dy);
+            if (lineLength < 1e-9)
+            {
+                return;
+            }
+            dx /= lineLength;
+            dy /= lineLength;
 
+            // rzut kursora na ten kierunek = nowa długość przerywanej linii od wierzchołka do punktu kontrolnego
+            double controlPointLineLength = (controlPoint.x - vertex.x) * dx + (controlPoint.y - vertex.y) * dy;
+            controlPointLineLength = Math.Max(1, controlPointLineLength);
+
+            if (vertex.continuity == Continuity.C1)
+            {
+                double savedX = otherVertex.x;
+                double savedY = otherVertex.y;
+                otherVertex.x = vertex.x - dx * 3 * controlPointLineLength;
+                otherVertex.y = vertex.y - dy * 3 * controlPointLineLength;
+
+                if (!MoveVertex(polygon, vertex, vertex.x, vertex.y))
+                {
+                    // nie da się to wracamy, punkt kontrolny na swoje jedyne miejsce
+                    otherVertex.x = savedX;
+                    otherVertex.y = savedY;
+                    ContinuityFixer.FixVertex(vertex);
+                }
+                return;
+            }
+
+            controlPoint.x = vertex.x + dx * controlPointLineLength;
+            controlPoint.y = vertex.y + dy * controlPointLineLength;
+        }
     }
 }
