@@ -56,6 +56,9 @@ namespace GK.objects
                 type = EdgeType.Line;
                 controlPoint1 = null;
                 controlPoint2 = null;
+
+                ContinuityFixer.FixVertex(startVertex);
+                ContinuityFixer.FixVertex(endVertex);
                 return;
             }
 
@@ -69,6 +72,18 @@ namespace GK.objects
 
             controlPoint1 = new ControlPoint(startVertex.x + dx / 3 + px / 4, startVertex.y + dy / 3 + py / 4);
             controlPoint2 = new ControlPoint(startVertex.x + 2 * dx / 3 + px / 4, startVertex.y + 2 * dy / 3 + py / 4);
+
+            if (!startVertex.continuitySetByUser)
+            {
+                startVertex.continuity = Continuity.C1;
+            }
+            if (!endVertex.continuitySetByUser)
+            {
+                endVertex.continuity = Continuity.C1;
+            }
+
+            ContinuityFixer.FitOutgoingControlPoint(startVertex); // controlPoint1
+            ContinuityFixer.FitIncomingControlPoint(endVertex); // controlPoint2
         }
     }
 }

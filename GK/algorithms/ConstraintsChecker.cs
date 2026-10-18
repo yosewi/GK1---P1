@@ -32,6 +32,8 @@ namespace GK.algorithms
                 bool backwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Backward);
                 if (forwardOk && backwardOk && AllEdgesGood(polygon))
                 {
+                    MoveControlPointsWithVertices(polygon);
+                    ContinuityFixer.FixPolygon(polygon);
                     return true;
                 }
             }
@@ -175,6 +177,26 @@ namespace GK.algorithms
                 }
             }
             return true;
+        }
+
+        // punkty kontrolne jadą razem ze swoimi wierzchołkami
+        private static void MoveControlPointsWithVertices(Polygon polygon)
+        {
+            foreach (Edge edge in polygon.edges)
+            {
+                if (edge.type == EdgeType.Bezier)
+                {
+                    MoveWithItsVertex(edge.controlPoint1!);
+                    MoveWithItsVertex(edge.controlPoint2!);
+                }
+            }
+        }
+
+        // przesuwa punkt kontrolny o tyle, o ile jego wierzchołek przesunął się od początku ruchu
+        private static void MoveWithItsVertex(ControlPoint controlPoint)
+        {
+            controlPoint.x += controlPoint.vertex.x - controlPoint.vertex.oldX;
+            controlPoint.y += controlPoint.vertex.y - controlPoint.vertex.oldY;
         }
     }
 }

@@ -11,11 +11,14 @@ namespace GK.objects
     {
         public double x { get; set; }
         public double y { get; set; }
+        // wierzchołek, przy którym leży ten punkt kontrolny
+        public Vertex vertex { get; }
 
         public ControlPoint(double x, double y)
         {
             this.x = x;
             this.y = y;
+            this.vertex = vertex;
         }
 
         public bool IsHit(double px, double py, double radius)
