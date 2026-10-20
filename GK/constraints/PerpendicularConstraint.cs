@@ -65,6 +65,10 @@ namespace GK.constraints
             double px = -referenceYdif / referenceLength;
             double py = referenceXdif / referenceLength;
 
+            // drugi pomysł na nowe miejsce
+            (double x, double y) startPosition = (vertexToMove.x, vertexToMove.y);
+            (double x, double y)? slidePosition = PositionAfterSlideAlongNextEdge(edge, fixedVertex, vertexToMove, (px, py));
+
             double length = NewLength(fixedVertex, vertexToMove);
 
             // liczy 2 możliwe punkty do przesunięcia vertexToMove, które są prostopadłe do wzorca
@@ -87,13 +91,26 @@ namespace GK.constraints
                 vertexToMove.x = bx;
                 vertexToMove.y = by;
             }
+
+            if (slidePosition != null)
+            {
+                double distanceAfterRotation = Geometry.Distance(startPosition.x, startPosition.y, vertexToMove.x, vertexToMove.y);
+                double distanceAfterSlide = Geometry.Distance(startPosition.x, startPosition.y, slidePosition.Value.x, slidePosition.Value.y);
+
+                if (distanceAfterSlide <= distanceAfterRotation)
+                {
+                    vertexToMove.x = slidePosition.Value.x;
+                    vertexToMove.y = slidePosition.Value.y;
+                }
+            }
         }
 
         // nextEdge - krawędź, którą będziemy sprawdzać zaraz po obecnej
         // jeśli to nasza para, prostopadłość poprawi się dopiero tam (róg zostaje na miejscu)
         public override bool CanWaitForFix(Edge nextEdge)
         {
-            return nextEdge == first || nextEdge == second;
+            bool nextEdgeIsOurPair = nextEdge == first || nextEdge == second;
+            return nextEdgeIsOurPair && CanRotateFreely(nextEdge);
         }
 
         private Edge OtherEdge(Edge edge)
@@ -136,6 +153,79 @@ namespace GK.constraints
                 }
             }
             return false;
+        }
+
+        // czy krawędź może się obracać
+        private bool CanRotateFreely(Edge edge)
+        {
+            foreach (Constraint c in edge.constraints)
+            {
+                if (c is PerpendicularConstraint && c != this)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Gdzie stanąłby vertexToMove, gdyby pojechał wzdłuż następnej krawędzi
+        // Następna krawędź zmieniłaby wtedy tylko długość, a kierunek by został
+        private static (double x, double y)? PositionAfterSlideAlongNextEdge(Edge edge, Vertex fixedVertex, Vertex vertexToMove, (double x, double y) perpendicularDirection)
+        {
+            Edge nextEdge = vertexToMove.EdgeOnOtherSide(edge);
+            if (!HasFixedDirectionButFreeLength(nextEdge))
+            {
+                return null;
+            }
+
+            Vertex nextEdgeFarEnd = nextEdge.OtherVertex(vertexToMove);
+            (double x, double y) nextEdgeVector = Geometry.VectorFromTo(nextEdgeFarEnd.x, nextEdgeFarEnd.y, vertexToMove.x, vertexToMove.y);
+            if (Geometry.VectorLength(nextEdgeVector) < 1e-9)
+            {
+                return null;
+            }
+            (double x, double y) nextEdgeDirection = Geometry.SameDirectionWithLength(nextEdgeVector, 1);
+
+            // punkt wspólny dwóch prostych
+            (double x, double y)? crossing = Geometry.CrossingOfLines((fixedVertex.x, fixedVertex.y), perpendicularDirection, (nextEdgeFarEnd.x, nextEdgeFarEnd.y), nextEdgeDirection);
+            if (crossing == null)
+            {
+                return null;
+            }
+
+            if (!KeepsDirection(fixedVertex, vertexToMove, crossing.Value) || !KeepsDirection(nextEdgeFarEnd, vertexToMove, crossing.Value))
+            {
+                return null;
+            }
+
+            return crossing;
+        }
+
+        // czy krawędź ma ustalony kierunek, ale wolną długość (brak zadanej długości)
+        private static bool HasFixedDirectionButFreeLength(Edge edge)
+        {
+            bool hasPerpendicular = false;
+            foreach (Constraint c in edge.constraints)
+            {
+                if (c is LengthConstraint)
+                {
+                    return false;
+                }
+                if (c is PerpendicularConstraint)
+                {
+                    hasPerpendicular = true;
+                }
+            }
+            return hasPerpendicular;
+        }
+
+        // czy krawędź od "end" do nowego punktu ma ten sam zwrot co od "end" do vertexToMove
+        private static bool KeepsDirection(Vertex end, Vertex vertexToMove, (double x, double y) newPoint)
+        {
+            (double x, double y) oldVector = Geometry.VectorFromTo(end.x, end.y, vertexToMove.x, vertexToMove.y);
+            (double x, double y) newVector = Geometry.VectorFromTo(end.x, end.y, newPoint.x, newPoint.y);
+            bool sameSide = oldVector.x * newVector.x + oldVector.y * newVector.y > 0;
+            return sameSide && Geometry.VectorLength(newVector) >= 1;
         }
     }
 }

@@ -85,5 +85,27 @@ namespace GK.objects
             ContinuityFixer.FitOutgoingControlPoint(startVertex); // controlPoint1
             ContinuityFixer.FitIncomingControlPoint(endVertex); // controlPoint2
         }
+
+        // Wektor styczny w początku krawędzi
+        public (double x, double y) TangentVectorLeavingStart()
+        {
+            if (type == EdgeType.Bezier)
+            {
+                // P'(0) = 3 (V1 - V0)
+                return (3 * (controlPoint1!.x - startVertex.x), 3 * (controlPoint1!.y - startVertex.y));
+            }
+            return (endVertex.x - startVertex.x, endVertex.y - startVertex.y);
+        }
+
+        // Wektor styczny w końcu krawędzi
+        public (double x, double y) TangentVectorArrivingAtEnd()
+        {
+            if (type == EdgeType.Bezier)
+            {
+                // P'(1) = 3 (V3 - V2)
+                return (3 * (endVertex.x - controlPoint2!.x), 3 * (endVertex.y - controlPoint2!.y));
+            }
+            return (endVertex.x - startVertex.x, endVertex.y - startVertex.y);
+        }
     }
 }

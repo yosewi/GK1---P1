@@ -36,5 +36,15 @@ namespace GK.objects
         {
             return Geometry.Distance(this.x, this.y, x, y) <= radius;
         }
+
+        // krawędź po drugiej stronie wierzchołka niż podana
+        public Edge EdgeOnOtherSide(Edge edge)
+        {
+            if (edge == firstEdge)
+            {
+                return secondEdge;
+            }
+            return firstEdge;
+        }
     }
 }

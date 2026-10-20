@@ -25,5 +25,17 @@ namespace GK.objects
         {
             return Geometry.Distance(x, y, px, py) <= radius;
         }
+
+        public Edge EdgeItBelongsTo
+        {
+            get
+            {
+                if (vertex.secondEdge.controlPoint1 == this)
+                {
+                    return vertex.secondEdge;
+                }
+                return vertex.firstEdge;
+            }
+        }
     }
 }

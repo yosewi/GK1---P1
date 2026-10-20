@@ -39,5 +39,41 @@ namespace GK.algorithms
         {
             return ((x1 + x2) / 2, (y1 + y2) / 2);
         }
+
+        public static (double x, double y) VectorFromTo(double fromX, double fromY, double toX, double toY)
+        {
+            return (toX - fromX, toY - fromY);
+        }
+
+        public static double VectorLength((double x, double y) vector)
+        {
+            return Math.Sqrt(vector.x * vector.x + vector.y * vector.y);
+        }
+
+        public static double LengthAlongDirection((double x, double y) vector, (double x, double y) unitDirection)
+        {
+            return vector.x * unitDirection.x + vector.y * unitDirection.y;
+        }
+
+        // wektor o tym samym kierunku co vector, ale o podanej długości (vector nie może mieć długości 0)
+        public static (double x, double y) SameDirectionWithLength((double x, double y) vector, double newLength)
+        {
+            double currentLength = VectorLength(vector);
+            return (vector.x / currentLength * newLength, vector.y / currentLength * newLength);
+        }
+
+        public static (double x, double y)? CrossingOfLines((double x, double y) point1, (double x, double y) direction1, (double x, double y) point2, (double x, double y) direction2)
+        {
+            double sinOfAngle = direction1.x * direction2.y - direction1.y * direction2.x;
+            if (Math.Abs(sinOfAngle) < 0.2)
+            {
+                return null;
+            }
+
+            (double x, double y) fromPoint1ToPoint2 = VectorFromTo(point1.x, point1.y, point2.x, point2.y);
+            double a = (fromPoint1ToPoint2.x * direction2.y - fromPoint1ToPoint2.y * direction2.x) / sinOfAngle;
+
+            return (point1.x + a * direction1.x, point1.y + a * direction1.y);
+        }
     }
 }
