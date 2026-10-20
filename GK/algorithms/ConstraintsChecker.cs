@@ -21,15 +21,27 @@ namespace GK.algorithms
         // false - nie i przesuwamy cały wielokąt
         public static bool MoveVertex(Polygon polygon, Vertex vertex, double x, double y)
         {
+            if (TryMoveVertex(polygon, vertex, x, y, null))
+            {
+                return true;
+            }
+
+            polygon.Move(x - vertex.x, y - vertex.y);
+            return false;
+        }
+
+        // Próbuje przesunąć wierzchołek, poprawiając resztę wielokąta.
+        public static bool TryMoveVertex(Polygon polygon, Vertex vertex, double x, double y, Vertex? cantMoveVertex)
+        {
             Backup(polygon);
 
             vertex.x = x;
             vertex.y = y;
 
-            for(int i =0; i < maxAttempts; i++)
+            for (int i = 0; i < maxAttempts; i++)
             {
-                bool forwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Forward);
-                bool backwardOk = CheckingPolygon(polygon, vertex, CheckingDirection.Backward);
+                bool forwardOk = CheckingPolygon(polygon, vertex, cantMoveVertex, CheckingDirection.Forward);
+                bool backwardOk = CheckingPolygon(polygon, vertex, cantMoveVertex, CheckingDirection.Backward);
                 if (forwardOk && backwardOk && AllEdgesGood(polygon))
                 {
                     MoveControlPointsWithVertices(polygon);
@@ -39,7 +51,6 @@ namespace GK.algorithms
             }
 
             RestoreBackup(polygon);
-            polygon.Move(x - vertex.oldX, y - vertex.oldY);
             return false;
         }
 
@@ -88,43 +99,29 @@ namespace GK.algorithms
             {
                 return;
             }
+            double directionX = hx / handleLength;
+            double directionY = hy / handleLength;
 
-            // długość odcinka: przy C1 wolny odcinek ma 3 * długość
-            // w pozostałych przypadkach zostaje stara
-            double newLength = otherEdge.Length;
-            if (vertex.continuity == Continuity.C1 && otherEdge.constraints.Count == 0)
+            Vertex farVertex = otherEdge.OtherVertex(vertex);
+            double oldLength = otherEdge.Length;
+
+            double newLength = oldLength;
+            if (vertex.continuity == Continuity.C1)
             {
                 newLength = 3 * handleLength;
             }
-
-            Vertex farVertex = otherEdge.OtherVertex(vertex);
-            double targetX = vertex.x + hx / handleLength * newLength;
-            double targetY = vertex.y + hy / handleLength * newLength;
-
-            if (EdgeAcceptsVertexAt(otherEdge, farVertex, targetX, targetY))
+            if (TryMoveVertex(polygon, farVertex, vertex.x + directionX * newLength, vertex.y + directionY * newLength, vertex))
             {
-                MoveVertex(polygon, farVertex, targetX, targetY);
+                return;
             }
-            else
+
+            if (vertex.continuity == Continuity.C1 && TryMoveVertex(polygon, farVertex, vertex.x + directionX * oldLength, vertex.y + directionY * oldLength, vertex))
             {
-                // odcinek nie może się obrócić (prostopadłość), wiec punkt kontrolny jeździ po przedłużeniu odcinka
-                SlideAlongLine(polygon, vertex, controlPoint, otherEdge, farVertex);
+                return;
             }
-        }
 
-        // czy ograniczenia krawędzi byłyby spełnione, gdyby wierzchołek stał w (x, y)?
-        private static bool EdgeAcceptsVertexAt(Edge edge, Vertex vertex, double x, double y)
-        {
-            double savedX = vertex.x;
-            double savedY = vertex.y;
-
-            vertex.x = x;
-            vertex.y = y;
-            bool good = IsEdgeGood(edge);
-
-            vertex.x = savedX;
-            vertex.y = savedY;
-            return good;
+            // odcinka nie da się obrócić - punkt kontrolny jeździ po jego przedłużeniu
+            SlideAlongLine(polygon, vertex, controlPoint, otherEdge, farVertex);
         }
 
         // Dodaje ograniczenie i od razu dopasowuje do niego kształt
@@ -175,7 +172,7 @@ namespace GK.algorithms
         // sprawdzamy wielokąt w danym kierunku
         // true - udało się znaleźć dobrą krawędź
         // false - nie i trzeba przesunąć cały wielokąt
-        private static bool CheckingPolygon(Polygon polygon, Vertex draggedVertex, CheckingDirection direction)
+        private static bool CheckingPolygon(Polygon polygon, Vertex draggedVertex, Vertex? cantMoveVertex, CheckingDirection direction)
         {
             Vertex fixedVertex = draggedVertex; // wierzchołek który już stoi dobrze
             int stepsLeft = polygon.vertices.Count;
@@ -191,7 +188,7 @@ namespace GK.algorithms
 
                 Vertex vertexToMove = edge.OtherVertex(fixedVertex);
 
-                if (vertexToMove == draggedVertex)
+                if (vertexToMove == draggedVertex || vertexToMove == cantMoveVertex)
                 {
                     return false;
                 }
@@ -303,16 +300,10 @@ namespace GK.algorithms
 
             if (vertex.continuity == Continuity.C1)
             {
-                double savedX = otherVertex.x;
-                double savedY = otherVertex.y;
-                otherVertex.x = vertex.x - dx * 3 * controlPointLineLength;
-                otherVertex.y = vertex.y - dy * 3 * controlPointLineLength;
-
-                if (!MoveVertex(polygon, vertex, vertex.x, vertex.y))
+                double newEndX = vertex.x - dx * 3 * controlPointLineLength;
+                double newEndY = vertex.y - dy * 3 * controlPointLineLength;
+                if (!TryMoveVertex(polygon, otherVertex, newEndX, newEndY, vertex))
                 {
-                    // nie da się to wracamy, punkt kontrolny na swoje jedyne miejsce
-                    otherVertex.x = savedX;
-                    otherVertex.y = savedY;
                     ContinuityFixer.FixVertex(vertex);
                 }
                 return;
