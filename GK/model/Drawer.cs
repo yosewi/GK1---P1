@@ -3,6 +3,7 @@ using GK.constraints;
 using GK.drawing;
 using GK.enums;
 using GK.objects;
+using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
@@ -18,7 +19,7 @@ namespace GK.model
         public Edge? highlightedEdge { get; set; }
         private Pen dashedPen = new Pen(Color.Gray, 1) { DashStyle = DashStyle.Dash };
         public ILineDrawer lineDrawer { get; set; } = new LibraryLineDrawer();
-        
+
         public void DrawSpace(Space space, Graphics graphics)
         {
             foreach (Polygon polygon in space.polygons)
@@ -43,13 +44,17 @@ namespace GK.model
             }
         }
 
-        public void DrawPolygon(Polygon polygon, Graphics graphics)   
+        public void DrawPolygon(Polygon polygon, Graphics graphics)
         {
             foreach (Edge edge in polygon.edges)
             {
                 if (edge.type == EdgeType.Bezier)
                 {
                     DrawBezierEdge(edge, graphics);
+                }
+                else if (edge.type == EdgeType.Arc)
+                {
+                    DrawArcEdge(edge, graphics);
                 }
                 else
                 {
@@ -122,6 +127,27 @@ namespace GK.model
                 return;
             }
             graphics.DrawString(vertex.continuity.ToString(), Label.DefaultFont, Brushes.DarkGreen, (float)vertex.x + 8, (float)vertex.y - 20);
+        }
+
+        private void DrawArcEdge(Edge edge, Graphics graphics)
+        {
+            Arc? arc = ArcCurve.FindArcShape(edge);
+            if (arc == null)
+            {
+                lineDrawer.DrawLine(graphics, edge.startVertex.x, edge.startVertex.y, edge.endVertex.x, edge.endVertex.y, Color.Black);
+                return;
+            }
+
+            float left = (float)(arc.x - arc.radius);
+            float top = (float)(arc.y - arc.radius);
+            float width = (float)(arc.radius * 2);
+            float startDegree = (float)(arc.startAngle * 180 / Math.PI);
+            float sweepDegree = (float)(arc.sweep * 180 / Math.PI);
+
+            using (Pen pen = new Pen(Color.Black, 1))
+            {
+                graphics.DrawArc(pen, left, top, width, width, startDegree, sweepDegree);
+            }
         }
     }
 }
