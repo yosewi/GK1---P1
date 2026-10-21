@@ -138,16 +138,7 @@ namespace GK.model
                 return;
             }
 
-            float left = (float)(arc.x - arc.radius);
-            float top = (float)(arc.y - arc.radius);
-            float width = (float)(arc.radius * 2);
-            float startDegree = (float)(arc.startAngle * 180 / Math.PI);
-            float sweepDegree = (float)(arc.sweep * 180 / Math.PI);
-
-            using (Pen pen = new Pen(Color.Black, 1))
-            {
-                graphics.DrawArc(pen, left, top, width, width, startDegree, sweepDegree);
-            }
+            lineDrawer.DrawArc(graphics, arc, Color.Black);
         }
     }
 }

@@ -21,5 +21,17 @@ namespace GK.drawing
                 }
             }
         }
+
+        public void DrawArc(Graphics g, Arc arc, Color color)
+        {
+            List<(int x, int y)> pixels = MidpointCircle.FindPixels(arc);
+            using (SolidBrush brush = new SolidBrush(color))
+            {
+                foreach ((int x, int y) in pixels)
+                {
+                    g.FillRectangle(brush, x, y, 1, 1);
+                }
+            }
+        }
     }
 }
