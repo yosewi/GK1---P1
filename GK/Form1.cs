@@ -300,9 +300,9 @@ namespace GK
                 return;
             }
 
-            if (secondEdge.type == EdgeType.Bezier)
+            if (secondEdge.type != EdgeType.Line)
             {
-                MessageBox.Show("Krawędź Béziera nie może mieć ograniczeń.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Krzywa (Bézier albo łuk) nie może mieć ograniczeń.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -362,6 +362,18 @@ namespace GK
                 ContinuityFixer.FixVertex(menuVertex);
             }
             menuVertex = null;
+            menuPolygon = null;
+            panel.Invalidate();
+        }
+
+        private void arcOnoffToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (menuEdge != null)
+            {
+                space.RemoveConstraintsOfEdge(menuEdge);
+                menuEdge.SelectArc();
+            }
+            menuEdge = null;
             menuPolygon = null;
             panel.Invalidate();
         }

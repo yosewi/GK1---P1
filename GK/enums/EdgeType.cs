@@ -9,6 +9,7 @@ namespace GK.enums
     public enum EdgeType
     {
         Line,
-        Bezier
+        Bezier,
+        Arc
     }
 }

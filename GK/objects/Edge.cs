@@ -107,5 +107,19 @@ namespace GK.objects
             }
             return (endVertex.x - startVertex.x, endVertex.y - startVertex.y);
         }
+
+        // przełącza krawędź: odcinek -> łuk albo łuk -> odcinek
+        public void SelectArc()
+        {
+            if (type == EdgeType.Arc)
+            {
+                type = EdgeType.Line;
+                return;
+            }
+
+            type = EdgeType.Arc;
+            controlPoint1 = null;
+            controlPoint2 = null;
+        }
     }
 }
