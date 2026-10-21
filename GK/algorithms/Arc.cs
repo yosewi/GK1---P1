@@ -23,5 +23,35 @@ namespace GK.algorithms
             this.startAngle = startAngle;
             this.sweep = sweep;
         }
+
+        public bool ContainsArcWithAngle(double angle)
+        {
+            double fromStart;
+            if (sweep >= 0)
+            {
+                fromStart = angle - startAngle;
+
+            }
+            else
+            {
+                fromStart = startAngle - angle;
+            }
+
+            fromStart %= 2 * Math.PI;
+            if (fromStart < 0)
+            {
+                fromStart += 2 * Math.PI;
+            }
+
+            if(fromStart <= Math.Abs(sweep))
+            {
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
