@@ -33,6 +33,16 @@ namespace GK.objects
 
         public bool IsHit(double x, double y, double radius)
         {
+            if (type == EdgeType.Arc)
+            {
+                Arc? arc = ArcCurve.FindArcShape(this);
+                if (arc != null)
+                {
+                    double distanceToCenter = Geometry.Distance(x, y, arc.x, arc.y);
+                    double angle = Math.Atan2(y - arc.y, x - arc.x);
+                    return Math.Abs(distanceToCenter - arc.radius) <= radius && arc.ContainsArcWithAngle(angle);
+                }
+            }
             if (type == EdgeType.Bezier)
             {
                 List<(double x, double y)> points = BezierCurve.FindPoints(startVertex, controlPoint1!, controlPoint2!, endVertex);
