@@ -122,7 +122,7 @@ namespace GK.model
 
         private void DrawContinuityLabel(Vertex vertex, Graphics graphics)
         {
-            if (!vertex.HasBezierNeighbour)
+            if (!vertex.HasCurveNeighbour)
             {
                 return;
             }

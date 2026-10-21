@@ -85,15 +85,24 @@ namespace GK.objects
 
             if (!startVertex.continuitySetByUser)
             {
-                startVertex.continuity = Continuity.C1;
+                startVertex.continuity = DefaultContinuityForBezier(startVertex);
             }
             if (!endVertex.continuitySetByUser)
             {
-                endVertex.continuity = Continuity.C1;
+                endVertex.continuity = DefaultContinuityForBezier(endVertex);
             }
 
             ContinuityFixer.FitOutgoingControlPoint(startVertex); // controlPoint1
             ContinuityFixer.FitIncomingControlPoint(endVertex); // controlPoint2
+        }
+
+        private static Continuity DefaultContinuityForBezier(Vertex v)
+        {
+            if (v.HasArcNeighbour)
+            {
+                return Continuity.G0;
+            }
+            return Continuity.C1;
         }
 
         // Wektor styczny w początku krawędzi
@@ -124,12 +133,22 @@ namespace GK.objects
             if (type == EdgeType.Arc)
             {
                 type = EdgeType.Line;
+
+                // sąsiednie Béziery dopasowują się do odcinka
+                ContinuityFixer.FixVertex(startVertex);
+                ContinuityFixer.FixVertex(endVertex);
                 return;
             }
 
             type = EdgeType.Arc;
             controlPoint1 = null;
             controlPoint2 = null;
+
+            // nowy łuk zaczyna jako półokrąg: G0 w obu końcach (G1 można ustawić w jednym z nich)
+            startVertex.continuity = Continuity.G0;
+            startVertex.continuitySetByUser = false;
+            endVertex.continuity = Continuity.G0;
+            endVertex.continuitySetByUser = false;
         }
     }
 }

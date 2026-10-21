@@ -91,9 +91,9 @@ namespace GK
                     {
                         menuVertex = vertex;
                         menuPolygon = space.polygons[i];
-                        g0ToolStripMenuItem.Enabled = vertex.HasBezierNeighbour;
-                        g1ToolStripMenuItem.Enabled = vertex.HasBezierNeighbour;
-                        C1ToolStripMenuItem.Enabled = vertex.HasBezierNeighbour;
+                        g0ToolStripMenuItem.Enabled = vertex.HasCurveNeighbour;
+                        g1ToolStripMenuItem.Enabled = vertex.HasCurveNeighbour && vertex.CanBeG1();
+                        C1ToolStripMenuItem.Enabled = vertex.HasBezierNeighbour && !vertex.HasArcNeighbour;
                         g0ToolStripMenuItem.Checked = vertex.continuity == Continuity.G0;
                         g1ToolStripMenuItem.Checked = vertex.continuity == Continuity.G1;
                         C1ToolStripMenuItem.Checked = vertex.continuity == Continuity.C1;

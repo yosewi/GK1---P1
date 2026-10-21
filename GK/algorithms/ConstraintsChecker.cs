@@ -101,6 +101,11 @@ namespace GK.algorithms
 
             Edge otherEdge = vertex.EdgeOnOtherSide(controlPoint.EdgeItBelongsTo);
 
+            if (otherEdge.type == EdgeType.Arc)
+            {
+                return;
+            }
+
             if (otherEdge.type == EdgeType.Bezier)
             {
                 ContinuityFixer.FitControlPointOfEdgeAtVertex(otherEdge, vertex);

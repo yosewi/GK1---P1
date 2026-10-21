@@ -48,7 +48,7 @@ namespace GK.algorithms
         // ustawia controlPoint1 wychodzącego Béziera tak, żeby pasował do krawędzi wchodzącej
         public static void FitOutgoingControlPoint(Vertex v)
         {
-            if (v.continuity == Continuity.G0 || v.secondEdge.type != EdgeType.Bezier)
+            if (v.continuity == Continuity.G0 || v.secondEdge.type != EdgeType.Bezier || v.HasArcNeighbour)
             {
                 return;
             }
@@ -63,7 +63,7 @@ namespace GK.algorithms
         // ustawia controlPoint2 wchodzącego Béziera tak, żeby pasował do krawędzi wychodzącej
         public static void FitIncomingControlPoint(Vertex v)
         {
-            if (v.continuity == Continuity.G0 || v.firstEdge.type != EdgeType.Bezier)
+            if (v.continuity == Continuity.G0 || v.secondEdge.type != EdgeType.Bezier || v.HasArcNeighbour)
             {
                 return;
             }

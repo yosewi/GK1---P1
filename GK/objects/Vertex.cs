@@ -37,6 +37,21 @@ namespace GK.objects
             return Geometry.Distance(this.x, this.y, x, y) <= radius;
         }
 
+        public bool CanBeG1()
+        {
+            // krawędź wchodząca jest łukiem -> jego drugi koniec to jej startVertex
+            if (firstEdge.type == EdgeType.Arc && firstEdge.startVertex.continuity == Continuity.G1)
+            {
+                return false;
+            }
+            // krawędź wychodząca jest łukiem -> jego drugi koniec to jej endVertex
+            if (secondEdge.type == EdgeType.Arc && secondEdge.endVertex.continuity == Continuity.G1)
+            {
+                return false;
+            }
+            return true;
+        }
+
         // krawędź po drugiej stronie wierzchołka niż podana
         public Edge EdgeOnOtherSide(Edge edge)
         {
@@ -46,5 +61,8 @@ namespace GK.objects
             }
             return firstEdge;
         }
+
+        public bool HasArcNeighbour => firstEdge.type == EdgeType.Arc || secondEdge.type == EdgeType.Arc;
+        public bool HasCurveNeighbour => HasBezierNeighbour || HasArcNeighbour;
     }
 }
