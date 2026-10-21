@@ -63,7 +63,7 @@ namespace GK.algorithms
         // ustawia controlPoint2 wchodzącego Béziera tak, żeby pasował do krawędzi wychodzącej
         public static void FitIncomingControlPoint(Vertex v)
         {
-            if (v.continuity == Continuity.G0 || v.secondEdge.type != EdgeType.Bezier || v.HasArcNeighbour)
+            if (v.continuity == Continuity.G0 || v.firstEdge.type != EdgeType.Bezier || v.HasArcNeighbour)
             {
                 return;
             }
