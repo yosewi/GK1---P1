@@ -1,5 +1,6 @@
 ﻿using GK.algorithms;
 using GK.constraints;
+using GK.enums;
 using GK.objects;
 using System;
 using System.Collections.Generic;
@@ -16,47 +17,63 @@ namespace GK.model
         public Space CreateSpace()
         {
             Space space = new Space();
-            Polygon triangle = createTriangle();
-            Polygon poli = createpoli();
-            space.polygons.Add(triangle);
-            space.polygons.Add(poli);
-            ConstraintsChecker.TryAddConstraint(space, new LengthConstraint(triangle.edges[0], 300));
-            ConstraintsChecker.TryAddConstraint(space, new PerpendicularConstraint(poli.edges[0], poli.edges[1]));
+            Polygon constraintsPolygon = CreateConstraintsPolygon(space);
+            Polygon bezierPolygon = CreateBezierPolygon(space);
+            CreateArcPolygon(space);
+
+            ConstraintsChecker.TryAddConstraint(space, new PerpendicularConstraint(constraintsPolygon.edges[2], bezierPolygon.edges[4]));
 
             return space;
         }
 
-        private Polygon createTriangle()
+        private Polygon CreateConstraintsPolygon(Space space)
         {
-            List<Vertex> vertices = new List<Vertex>
-            {
-                new Vertex(100, 100),
-                new Vertex(300, 100),
-                new Vertex(200, 250)
-            };
-            return new Polygon(vertices);
+            Polygon polygon = AddPolygon(space, (230, 210), (490, 210), (490, 370), (410, 490), (230, 370));
+
+            ConstraintsChecker.TryAddConstraint(space, new LengthConstraint(polygon.edges[0], 260));
+            ConstraintsChecker.TryAddConstraint(space, new PerpendicularConstraint(polygon.edges[0], polygon.edges[1]));
+            ConstraintsChecker.TryAddConstraint(space, new PerpendicularConstraint(polygon.edges[4], polygon.edges[0]));
+
+            return polygon;
         }
 
-        private Polygon createpoli()
+        private Polygon CreateBezierPolygon(Space space)
         {
-            List<Vertex> vertices = new List<Vertex>
-            {
-                new Vertex(600, 100),
-                new Vertex(700, 100),
-                new Vertex(900, 300),
-                new Vertex(800, 300),
-                new Vertex(900, 350),
-                new Vertex(950, 300),
-                new Vertex(1000, 300)
-            };
-            return new Polygon(vertices);
+            Polygon polygon = AddPolygon(space, (590, 460), (560, 260), (780, 260), (810, 460), (710, 540));
+
+            polygon.edges[1].SelectBezier();
+            polygon.edges[3].SelectBezier();
+            polygon.vertices[3].SetContinuity(Continuity.G1);
+            polygon.vertices[4].SetContinuity(Continuity.G0);
+
+            return polygon;
         }
 
-        private void AddConstraint(Space space, Polygon polygon, Constraint constraint)
+        private Polygon CreateArcPolygon(Space space)
         {
-            space.AddConstraint(constraint);
-            Vertex start = constraint.Edges.First().startVertex;
-            ConstraintsChecker.MoveVertex(polygon, start, start.x, start.y);
+            Polygon polygon = AddPolygon(space, (930, 240), (1060, 240), (1140, 340), (1080, 470), (950, 470), (900, 360));
+
+            polygon.edges[0].SelectArc();
+            polygon.edges[2].SelectArc();
+            polygon.vertices[2].SetContinuity(Continuity.G1);
+            polygon.edges[4].SelectArc();
+            polygon.edges[3].SelectBezier();
+            polygon.vertices[4].SetContinuity(Continuity.G1);
+
+            return polygon;
+        }
+
+        private static Polygon AddPolygon(Space space, params (double x, double y)[] points)
+        {
+            List<Vertex> vertices = new List<Vertex>();
+            foreach ((double x, double y) in points)
+            {
+                vertices.Add(new Vertex(x, y));
+            }
+
+            Polygon polygon = new Polygon(vertices);
+            space.polygons.Add(polygon);
+            return polygon;
         }
     }
 }

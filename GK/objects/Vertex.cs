@@ -64,5 +64,12 @@ namespace GK.objects
 
         public bool HasArcNeighbour => firstEdge.type == EdgeType.Arc || secondEdge.type == EdgeType.Arc;
         public bool HasCurveNeighbour => HasBezierNeighbour || HasArcNeighbour;
+
+        public void SetContinuity(Continuity continuity)
+        {
+            this.continuity = continuity;
+            continuitySetByUser = true;
+            ContinuityFixer.FixVertex(this);
+        }
     }
 }

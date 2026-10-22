@@ -357,9 +357,7 @@ namespace GK
         {
             if (menuVertex != null)
             {
-                menuVertex.continuity = continuity;
-                menuVertex.continuitySetByUser = true;
-                ContinuityFixer.FixVertex(menuVertex);
+                menuVertex.SetContinuity(continuity);
             }
             menuVertex = null;
             menuPolygon = null;
