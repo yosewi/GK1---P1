@@ -9,8 +9,11 @@ namespace GK.constraints
 {
     public abstract class Constraint
     {
+        // na jakich krawędziach jest ograniczenie
         public abstract IEnumerable<Edge> Edges { get; }
+        // napis rysowany na ekranie
         public abstract string Label { get; }
+        // czy ograniczenie jest spełnione
         public abstract bool IsDone();
         // poprawia krawędź edge: fixedVertex zostaje w miejscu, rusza się drugi koniec krawędzi
         public abstract void Fix(Edge edge, Vertex fixedVertex);
