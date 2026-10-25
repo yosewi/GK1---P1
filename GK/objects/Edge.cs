@@ -24,15 +24,21 @@ namespace GK.objects
             this.endVertex = endVertex;
         }
 
+        // długość krawędzi
         public double Length => Geometry.Distance(startVertex.x, startVertex.y, endVertex.x, endVertex.y);
 
+        // drugi wierzchołek krawędzi która ma wierzchołek v
         public Vertex OtherVertex(Vertex v)
         {
             return v == startVertex ? endVertex : startVertex;
         }
 
+        // czy kliknięcie trafiło w krawędź
+        // sprawdza łuk, beziera i zwykłą krawędź
         public bool IsHit(double x, double y, double radius)
         {
+            // Punkt jest na łuku, gdy |odległość od środka − promień| ≤ radius
+            // jego kąt musi mieścić się w zakresie łuku (ContainsArcWithAngle)
             if (type == EdgeType.Arc)
             {
                 Arc? arc = ArcCurve.FindArcShape(this);
@@ -43,6 +49,7 @@ namespace GK.objects
                     return Math.Abs(distanceToCenter - arc.radius) <= radius && arc.ContainsArcWithAngle(angle);
                 }
             }
+            // liczy te punkty co przy rysowaniu beziera i sprawdza odleglosc
             if (type == EdgeType.Bezier)
             {
                 List<(double x, double y)> points = BezierCurve.FindPoints(startVertex, controlPoint1!, controlPoint2!, endVertex);
@@ -59,6 +66,7 @@ namespace GK.objects
             return Geometry.IsNearEdge(x, y, startVertex.x, startVertex.y, endVertex.x, endVertex.y, radius);
         }
 
+        // przełącza między zwykłą krawędzią a bezierem
         public void SelectBezier()
         {
             if (type == EdgeType.Bezier)
@@ -96,6 +104,7 @@ namespace GK.objects
             ContinuityFixer.FitIncomingControlPoint(endVertex); // controlPoint2
         }
 
+        // domyślna ciągłość beziera - C1 chyba że sasiednia krawedz to łuk
         private static Continuity DefaultContinuityForBezier(Vertex v)
         {
             if (v.HasArcNeighbour)
@@ -134,7 +143,7 @@ namespace GK.objects
             {
                 type = EdgeType.Line;
 
-                // sąsiednie Béziery dopasowują się do odcinka
+                // sąsiednie beziery dopasowują się do odcinka
                 ContinuityFixer.FixVertex(startVertex);
                 ContinuityFixer.FixVertex(endVertex);
                 return;
@@ -144,7 +153,7 @@ namespace GK.objects
             controlPoint1 = null;
             controlPoint2 = null;
 
-            // nowy łuk zaczyna jako półokrąg: G0 w obu końcach (G1 można ustawić w jednym z nich)
+            // nowy łuk zaczyna jako półokrąg: G0 w obu końcach
             startVertex.continuity = Continuity.G0;
             startVertex.continuitySetByUser = false;
             endVertex.continuity = Continuity.G0;
