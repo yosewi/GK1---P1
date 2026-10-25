@@ -13,6 +13,7 @@ namespace GK.algorithms
     {
         private const int n = 100;
 
+        // znajduje punkty dla krzywej beziera
         public static List<(double x, double y)> FindPoints(Vertex v0, ControlPoint v1, ControlPoint v2, Vertex v3)
         {
             double a0x = v0.x;
