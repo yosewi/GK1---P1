@@ -10,7 +10,7 @@ namespace GK.objects
 {
     public class Polygon
     {
-
+        // edge[i] idzie od vertices[i] do vertices[i+1]
         public List<Vertex> vertices { get; set; }
         public List<Edge> edges { get; set; } = new List<Edge>();
 
@@ -20,6 +20,7 @@ namespace GK.objects
             BuildEdges();
         }
 
+        // tworzy krawędzie
         private void BuildEdges()
         {
             int n = vertices.Count;
@@ -37,6 +38,7 @@ namespace GK.objects
             }
         }
 
+        // pierwszy trafiony wierzcholek
         public Vertex? ClickedVertex(double x, double y, double radius)
         {
             foreach (Vertex v in vertices)
@@ -49,6 +51,7 @@ namespace GK.objects
             return null;
         }
 
+        // pierwszy kliknięty punkt kontrolny
         public ControlPoint? ClickedControlPoint(double x, double y, double radius)
         {
             foreach (Edge e in edges)
@@ -65,6 +68,7 @@ namespace GK.objects
             return null;
         }
 
+        // sprawdza czy kliknięto w wielokąt lub blisko niego
         public bool IsInside(double x, double y)
         {
             double minX = double.MaxValue;
@@ -83,6 +87,8 @@ namespace GK.objects
             return x <= maxX && x >= minX && y <= maxY && y >= minY;
         }
 
+        // przesuwa caly wielokąt, czyli wszystkie wierzchołki i punkty kontrolne
+        // o ten sam wektor
         public void Move(double x, double y)
         {
             foreach(Vertex v in vertices)
@@ -106,6 +112,7 @@ namespace GK.objects
             }
         }
 
+        // usuwa wierzchołek a jego krawędzie zastępuje jedną
         public bool DeleteVertex(Vertex v)
         {
             if (vertices.Count <= 3)
@@ -118,6 +125,9 @@ namespace GK.objects
             return true;
         }
 
+        // e1 wchodząca, e2 wychodząca usuwanego wierzchołka. nowa krawędź 
+        // od e1.startvertex do e2.endvertex zajmuje miejsce e1. 
+        // nowa krawędź jest bez ograniczeń
         public void EdgesAfterDeletingVertex(Edge e1, Edge e2)
         {
             int id = edges.IndexOf(e1);
@@ -133,6 +143,7 @@ namespace GK.objects
             e.endVertex.firstEdge = e;
         }
 
+        // zwraca krawedz na ktora sie kliknelo
         public Edge? ClickedEdge(double x, double y, double radius)
         {
             foreach (Edge e in edges)
@@ -145,6 +156,8 @@ namespace GK.objects
             return null;
         }
 
+        // nowy wierzchołek w srodku krawedzi. 
+        // e zastępują dwie krawędzie
         public void AddVertexOnEdge(Edge e)
         {
             Vertex start = e.startVertex;
