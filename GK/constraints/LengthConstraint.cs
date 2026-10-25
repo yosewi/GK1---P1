@@ -9,6 +9,7 @@ namespace GK.constraints
 {
     public class LengthConstraint : Constraint
     {
+        // tolerancja 0,01 pixela
         private const double Epsilon = 0.01;
 
         public Edge edge { get; }
@@ -20,16 +21,22 @@ namespace GK.constraints
             this.length = length;
         }
 
+        // krawędź z ograniczeniem
         public override IEnumerable<Edge> Edges => new[] { edge };
 
+        // napis wyswieltany na ekranie
         public override string Label => $"{length:0}";
 
+        // czy ograniczenie jest spelnione
         public override bool IsDone()
         {
             return Math.Abs(edge.Length - length) < Epsilon;
         }
 
         // przesuwa drugi wierzchołek krawędzi tak, aby zachować długość krawędzi
+        // przesuwa drugi koniec wzdłuż prostej przez oba końce, na odległość length od stałego końca.
+        // Drugi koniec musi leżeć na okręgu o promieniu length wokół stałego końca. Najbliższy punkt 
+        // okręgu do jego obecnego położenia leży na półprostej od środka przez to położenie.
         public override void Fix(Edge edge, Vertex movedVertex)
         {
             Vertex other = edge.OtherVertex(movedVertex);
