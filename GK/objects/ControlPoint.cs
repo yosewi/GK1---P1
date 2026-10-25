@@ -13,7 +13,7 @@ namespace GK.objects
         public double y { get; set; }
         // wierzchołek, przy którym leży ten punkt kontrolny
         public Vertex vertex { get; }
-
+        
         public ControlPoint(double x, double y, Vertex vertex)
         {
             this.x = x;
@@ -21,11 +21,13 @@ namespace GK.objects
             this.vertex = vertex;
         }
 
+        // czy trafiliśmy punkt kontrolny
         public bool IsHit(double px, double py, double radius)
         {
             return Geometry.Distance(x, y, px, py) <= radius;
         }
 
+        // do której krawędzi należy punkt kontrolny
         public Edge EdgeItBelongsTo
         {
             get
