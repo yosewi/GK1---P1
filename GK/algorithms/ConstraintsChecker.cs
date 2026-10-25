@@ -97,12 +97,20 @@ namespace GK.algorithms
             return false;
         }
 
-        // 
+        // dzialanie: punkt kontrolny ma sie zawsze przesuwac tam gdzie chcemy go przesunac
+        // czyli sprawdzamy czy jest G0, bo jak jest, to moze sie przesuwac niezaleznie od wszystkiego
+        // potem sprawdzamy czy po drugiej stronie wierzcholka (z jednej jest bezier) jest łuk.
+        // jak jest, to łuk przeliczy się przy rysowaniu i koniec.
+        // jak po drugiej stronie jest bezier, to dopasujemy tego drugiego beziera.
+        // ale jak z drugiej strony jest zwykly odcinek, to musimy go dopasowac algorytmem sprawdzajacym
+        // ograniczenia, w zaleznosci od ciaglosci przy wierzcholku.
         public static void MoveControlPoint(Polygon polygon, ControlPoint controlPoint, double x, double y)
         {
+            // punkt kontrolny pod kursorem
             controlPoint.x = x;
             controlPoint.y = y;
 
+            // jak G0 to koniec, bo nic nie jest powiazane
             Vertex vertex = controlPoint.vertex;
             if (vertex.continuity == Continuity.G0)
             {
@@ -111,11 +119,13 @@ namespace GK.algorithms
 
             Edge otherEdge = vertex.EdgeOnOtherSide(controlPoint.EdgeItBelongsTo);
 
+            // jak łuk to też koniec, bo łuk się dopasuje
             if (otherEdge.type == EdgeType.Arc)
             {
                 return;
             }
 
+            // jak bezier, to ustawiamy jego punkt kontrolny, a wierzcholkow nie ruszamy
             if (otherEdge.type == EdgeType.Bezier)
             {
                 ContinuityFixer.FitControlPointOfEdgeAtVertex(otherEdge, vertex);
@@ -161,8 +171,10 @@ namespace GK.algorithms
             return Geometry.Distance(controlPoint.x, controlPoint.y, x, y) < 0.01;
         }
 
+        // odcinek ma przedluzac styczną beziera za wierzcholkiem
         private static void AdjustLineToControlPoint(Polygon polygon, Vertex vertex, ControlPoint controlPoint, Edge line)
         {
+            // kierunek odcinka od punktu kontrolnego do wierzcholka
             (double x, double y) fromControlPointToVertex = Geometry.VectorFromTo(controlPoint.x, controlPoint.y, vertex.x, vertex.y);
             double controlPointLineLength = Geometry.VectorLength(fromControlPointToVertex);
             if (controlPointLineLength < 1e-9)
@@ -193,6 +205,7 @@ namespace GK.algorithms
             SlideControlPointAlongLine(polygon, vertex, controlPoint, lineFarEnd);
         }
 
+        // 
         private static bool TryPutLineFarEndAt(Polygon polygon, Vertex vertex, Vertex lineFarEnd, (double x, double y) lineDirection, double lineLength)
         {
             double targetX = vertex.x + lineDirection.x * lineLength;
