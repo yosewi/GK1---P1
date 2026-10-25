@@ -8,9 +8,13 @@ using System.Threading.Tasks;
 
 namespace GK.constraints
 {
+    // Prostopadłość poprawiamy obrotem krawędzi wokół stałego końca, do bliższego z dwóch prostopadłych położeń. 
+    // Gdy następna krawędź ma ustalony kierunek, wierzchołek może zamiast tego zjechać wzdłuż niej; wybieramy krótszy ruch.
     public class PerpendicularConstraint : Constraint
     {
+        // tolerancja dla consiusa
         private const double Epsilon = 0.0001;
+        // licznik/numerator dla prostopadlosci
         private static int nextId = 1;
 
         public int id { get; }
@@ -24,10 +28,13 @@ namespace GK.constraints
             id = nextId++;
         }
 
+        // prostopadle krawedzie
         public override IEnumerable<Edge> Edges => new[] { first, second };
 
+        // napis wyswietlany na ekranie
         public override string Label => $"⊥{id}";
 
+        // liczy cos = a·b / (|a|·|b|) i uznaje ograniczenie za spełnione, gdy |cos| < Epsilon (bo cos 90 stopni = 0)
         public override bool IsDone()
         {
             if (first.Length < 1e-9 || second.Length < 1e-9)
@@ -46,6 +53,8 @@ namespace GK.constraints
             return Math.Abs(cos) < Epsilon;
         }
 
+        // edge to krawędź do poprawienia, fixedVertex jej koniec, który zostaje, vertexToMove drugi koniec
+        // referenceEdge to wzorzec, czyli druga krawędź pary; ona się nie rusza
         public override void Fix(Edge edge, Vertex fixedVertex)
         {
             // wzorzec - druga krawędź z pary
@@ -53,11 +62,13 @@ namespace GK.constraints
             Vertex vertexToMove = edge.OtherVertex(fixedVertex);
 
             double referenceLength = referenceEdge.Length;
+            // Wzorzec długości prawie 0 -> koniec, bo nie ma kierunku, do którego można być prostopadłym
             if (referenceLength < 1e-9)
             {
                 return;
             }
 
+            // wektor wzorca
             double referenceXdif = referenceEdge.endVertex.x - referenceEdge.startVertex.x;
             double referenceYdif = referenceEdge.endVertex.y - referenceEdge.startVertex.y;
 
@@ -65,7 +76,7 @@ namespace GK.constraints
             double px = -referenceYdif / referenceLength;
             double py = referenceXdif / referenceLength;
 
-            // drugi pomysł na nowe miejsce
+            // drugi pomysł na nowe miejsce (zamiast obracac, mozna przesunac)
             (double x, double y) startPosition = (vertexToMove.x, vertexToMove.y);
             (double x, double y)? slidePosition = PositionAfterSlideAlongNextEdge(edge, fixedVertex, vertexToMove, (px, py));
 
@@ -92,6 +103,7 @@ namespace GK.constraints
                 vertexToMove.y = by;
             }
 
+            // jeśli da się przesunąć wierzchołki i to przesuniecie jest mniejsze niz obrócenie, to przesuwamy wierzcholk zamiast obracac
             if (slidePosition != null)
             {
                 double distanceAfterRotation = Geometry.Distance(startPosition.x, startPosition.y, vertexToMove.x, vertexToMove.y);
@@ -105,14 +117,15 @@ namespace GK.constraints
             }
         }
 
-        // nextEdge - krawędź, którą będziemy sprawdzać zaraz po obecnej
-        // jeśli to nasza para, prostopadłość poprawi się dopiero tam (róg zostaje na miejscu)
+        // true, gdy nextEdge to prostopadla para (prostopadłość dwóch sąsiednich krawędzi) i nextEdge może się swobodnie obracać. 
+        // Algorytm poprawiajacy wielokat nie rusza wtedy wspólnego rogu, tylko w następnym kroku obraca nextEdge wokół tego rogu.
         public override bool CanWaitForFix(Edge nextEdge)
         {
             bool nextEdgeIsOurPair = nextEdge == first || nextEdge == second;
             return nextEdgeIsOurPair && CanRotateFreely(nextEdge);
         }
 
+        // druga krawędź prostopadlej pary - wzorzec
         private Edge OtherEdge(Edge edge)
         {
             if (edge == first)
@@ -155,7 +168,7 @@ namespace GK.constraints
             return false;
         }
 
-        // czy krawędź może się obracać
+        // krawędź nie ma innej prostopadłości. Inna prostopadłość trzyma jej kierunek, a ograniczenie długości w obrocie nie przeszkadza.
         private bool CanRotateFreely(Edge edge)
         {
             foreach (Constraint c in edge.constraints)
@@ -168,10 +181,13 @@ namespace GK.constraints
             return true;
         }
 
-        // Gdzie stanąłby vertexToMove, gdyby pojechał wzdłuż następnej krawędzi
-        // Następna krawędź zmieniłaby wtedy tylko długość, a kierunek by został
+        // obrót przesuwa vertexToMove w bok, więc następna krawędź (po drugiej stronie vertexToMove) zmienia kierunek. 
+        // jeśli też ma prostopadłość, psuje się, a algorytm sprawddzajacy ograniczenia musi iść dalej i dłużej
+        // dlatego przesuwamy vertexToMove po prostej następnej krawędzi. Ona zmienia wtedy tylko długość, a jej kierunek i prostopadłość zostają,
+        // więc algorytm zatrzymuje się wcześniej
         private static (double x, double y)? PositionAfterSlideAlongNextEdge(Edge edge, Vertex fixedVertex, Vertex vertexToMove, (double x, double y) perpendicularDirection)
         {
+            // robimy to jak nastepna krawedz ma ograniczenie prostopadlosci, wiec jej kierunek jest zależny, ale nie ma ograniczenia dlugosci
             Edge nextEdge = vertexToMove.EdgeOnOtherSide(edge);
             if (!HasFixedDirectionButFreeLength(nextEdge))
             {
@@ -193,6 +209,7 @@ namespace GK.constraints
                 return null;
             }
 
+            // nowy wektor krawedzi ma ten sam zwrot co stary, wiec krawedz nie przeskakuje nagle
             if (!KeepsDirection(fixedVertex, vertexToMove, crossing.Value) || !KeepsDirection(nextEdgeFarEnd, vertexToMove, crossing.Value))
             {
                 return null;
