@@ -9,8 +9,10 @@ namespace GK.objects
 {
     public class Space
     {
+        // wszystkie wielokąty
         public List<Polygon> polygons { get; } = new List<Polygon>();
 
+        // dodaje ograniczenie dla wszystkich krawędzi
         public void AddConstraint(Constraint constraint)
         {
             foreach (Edge edge in constraint.Edges)
@@ -19,6 +21,7 @@ namespace GK.objects
             }
         }
 
+        // usuwa ograniczenie dla wszystkich krawędzi
         public void RemoveConstraint(Constraint constraint)
         {
             foreach (Edge edge in constraint.Edges)
@@ -27,6 +30,7 @@ namespace GK.objects
             }
         }
 
+        // usuwa wszystkie ograniczenia krawedzi
         public void RemoveConstraintsOfEdge(Edge edge)
         {
             foreach (Constraint constraint in edge.constraints.ToList())
@@ -35,6 +39,7 @@ namespace GK.objects
             }
         }
 
+        // wszystkie ograniczenia przestrzeni
         public HashSet<Constraint> AllConstraints()
         {
             HashSet<Constraint> result = new HashSet<Constraint>();
