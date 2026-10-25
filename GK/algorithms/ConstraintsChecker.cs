@@ -18,7 +18,7 @@ namespace GK.algorithms
         private const int MaxWaveRepetitions = 1000;
 
         // Przeciąganie wierzchołka myszą.
-        // true  - ruch się udał
+        // true - ruch się udał
         // false - nie dało się
         public static bool MoveVertex(Polygon polygon, Vertex vertex, double x, double y)
         {
@@ -31,16 +31,21 @@ namespace GK.algorithms
             return false;
         }
 
-        // Próba przesunięcia wierzchołka z poprawieniem reszty wielokąta (bez planu B).
-        // true  - udało się
+        // Próba przesunięcia wierzchołka z poprawieniem reszty wielokąta
+        // true - udało się
         // false - nie da się, wszystko wraca na stare miejsca
         public static bool TryMoveVertex(Polygon polygon, Vertex vertex, double x, double y, Vertex? cantMoveVertex)
         {
+            // zapamietujemy pozycje wierzcholkow
             RememberVertexPositions(polygon);
 
+            // przesuwamy trzymany kursorem wierzcholek
             vertex.x = x;
             vertex.y = y;
 
+            // w pętli zapamietujemy pozycje -> sprawdzamy wielokąt w obie strony od przesuwanego wierzcholka
+            // jak po obu stronach zatrzymalismy sie na wierzcholkach ktorych nie trzeba juz poprawiac
+            // to wielokat spelnia ograniczenia -> punkty kontrolne jadą za swoimi wierzcholkami, poprawiamy ciąglości i zawracamy true
             for (int repetition = 0; repetition < MaxWaveRepetitions; repetition++)
             {
                 List<(double x, double y)> positionsBefore = CurrentPositions(polygon);
@@ -65,10 +70,12 @@ namespace GK.algorithms
             return false;
         }
 
+        // dopsiuje ograniczenie do krawędzi, chyba że to niemożliwe
         public static bool TryAddConstraint(Space space, Constraint constraint)
         {
             space.AddConstraint(constraint);
 
+            // znajdujemy krawedz tego ograniczenia 
             foreach (Edge edge in constraint.Edges)
             {
                 Polygon? polygon = space.PolygonOf(edge);
@@ -77,6 +84,8 @@ namespace GK.algorithms
                     continue;
                 }
 
+                // robimy TryMoveVertex w to samo miejsce, żeby algorytm przeszedl przez
+                // caly wielokat i sprawdzil ograniczenia
                 Vertex start = edge.startVertex;
                 if (TryMoveVertex(polygon, start, start.x, start.y, null))
                 {
@@ -88,6 +97,7 @@ namespace GK.algorithms
             return false;
         }
 
+        // 
         public static void MoveControlPoint(Polygon polygon, ControlPoint controlPoint, double x, double y)
         {
             controlPoint.x = x;
@@ -217,9 +227,10 @@ namespace GK.algorithms
             controlPoint.y = vertex.y + extensionDirection.y * controlPointLineLength;
         }
 
+        // sprawdza czy ograniczenia są zachowane przechodząc po krawędziach wielokątu 
         private static bool RunWaveInOneDirection(Polygon polygon, Vertex draggedVertex, Vertex? cantMoveVertex, CheckingDirection direction)
         {
-            Vertex fixedVertex = draggedVertex;
+            Vertex fixedVertex = draggedVertex; // przeciągany wierzchołek
             int stepsLeft = polygon.vertices.Count;
 
             while (stepsLeft > 0)
@@ -249,8 +260,13 @@ namespace GK.algorithms
 
         // Poprawia ograniczenia krawędzi: fixedVertex zostaje, rusza się jej drugi koniec.
         // nextEdge - krawędź, którą fala sprawdzi zaraz po tej
+        // ograniczenie jest pomijane gdy jest juz spelnione, moze poczekac na poprawe
+        // lub w drugim powtorzeniu jest wspolne z nastepna krawedzia ktora zostanie sprawdzona
+        // nastepny krok algorytmu i tak sie nią zajmie
         private static void FixEdgeConstraints(Edge edge, Vertex fixedVertex, Edge nextEdge)
         {
+            // dwa powtorzenia bo krawędź może mieć kilka ograniczeń i poprawienie jednego
+            // czasami psuje inne. Drugie powtorzenie poprawia to co zepsulo pierwsze
             for (int round = 0; round < 2; round++)
             {
                 foreach (Constraint c in edge.constraints)
@@ -275,6 +291,7 @@ namespace GK.algorithms
             }
         }
 
+        // nastepna krawedz w okreslonym kierunku
         private static Edge NextEdgeInDirection(Vertex vertex, CheckingDirection direction)
         {
             if (direction == CheckingDirection.Forward)
@@ -284,6 +301,7 @@ namespace GK.algorithms
             return vertex.firstEdge;
         }
 
+        // czy wszystkie ograniczenia krawedzi są spelnione
         private static bool EdgeSatisfiesConstraints(Edge edge)
         {
             foreach (Constraint c in edge.constraints)
@@ -296,6 +314,7 @@ namespace GK.algorithms
             return true;
         }
 
+        // czy wszystkie ograniczenia wielokąta są spelnione
         private static bool PolygonSatisfiesConstraints(Polygon polygon)
         {
             foreach (Edge edge in polygon.edges)
@@ -308,6 +327,7 @@ namespace GK.algorithms
             return true;
         }
 
+        // polozenie wierzcholkow wielokata
         private static List<(double x, double y)> CurrentPositions(Polygon polygon)
         {
             List<(double x, double y)> positions = new List<(double x, double y)>();
@@ -331,6 +351,7 @@ namespace GK.algorithms
             return true;
         }
 
+        // zapis pozycji wierzcholkow
         private static void RememberVertexPositions(Polygon polygon)
         {
             foreach (Vertex v in polygon.vertices)
@@ -340,6 +361,7 @@ namespace GK.algorithms
             }
         }
 
+        // odtworzenie pozycji wierzcholkow
         private static void RestoreVertexPositions(Polygon polygon)
         {
             foreach (Vertex v in polygon.vertices)
@@ -349,6 +371,7 @@ namespace GK.algorithms
             }
         }
 
+        // kazdy punkt kontrolny przesuwa sie o tyle o ile jego wierzcholek
         private static void MoveControlPointsWithVertices(Polygon polygon)
         {
             foreach (Edge edge in polygon.edges)
@@ -361,6 +384,7 @@ namespace GK.algorithms
             }
         }
 
+        // punkt kontrolny przesuwa sie o tyle o ile jego wierzcholek
         private static void MoveControlPointWithItsVertex(ControlPoint controlPoint)
         {
             controlPoint.x += controlPoint.vertex.x - controlPoint.vertex.oldX;
