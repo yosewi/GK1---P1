@@ -32,11 +32,13 @@ namespace GK.objects
             this.y = y;
         }
 
+        // czy kliknięcie trafilo w wierzchołek
         public bool IsHit(double x, double y, double radius)
         {
             return Geometry.Distance(this.x, this.y, x, y) <= radius;
         }
 
+        // czy wolno ustawić tu G1
         public bool CanBeG1()
         {
             // krawędź wchodząca jest łukiem -> jego drugi koniec to jej startVertex
@@ -65,6 +67,7 @@ namespace GK.objects
         public bool HasArcNeighbour => firstEdge.type == EdgeType.Arc || secondEdge.type == EdgeType.Arc;
         public bool HasCurveNeighbour => HasBezierNeighbour || HasArcNeighbour;
 
+        // ustawia ciągłość i poprawia punkty kontrolne żeby ta ciąglosc byla zachowana
         public void SetContinuity(Continuity continuity)
         {
             this.continuity = continuity;
