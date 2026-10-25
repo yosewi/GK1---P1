@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace GK
 {
+    // okno do wpisania długości krawędzi 
+    // domyślnie aktualna długość
     internal class LengthDialog : Form
     {
         private readonly NumericUpDown input;

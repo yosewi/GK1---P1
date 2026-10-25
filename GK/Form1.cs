@@ -7,21 +7,22 @@ using GK.objects;
 
 namespace GK
 {
+    // Główne okno: obsługa myszy i menu kontekstowych
     public partial class Form1 : Form
     {
-        Space space;
+        Space space; // cała scena
         FullScreen fullScreen;
         Creator creator;
         Drawer drawer = new Drawer();
-        public DraggingType draggingType { get; set; } = DraggingType.None;
+        public DraggingType draggingType { get; set; } = DraggingType.None; // co aktualnie ciągniemy
         Vertex? draggedVertex = null;
         Polygon? draggedPolygon = null;
-        Vertex? menuVertex = null;
+        Vertex? menuVertex = null; // na czym otwarto menu kontekstowe
         Polygon? menuPolygon = null;
         Edge? menuEdge = null;
-        Point lastMousePosition;
+        Point lastMousePosition; // do przesuwania całego wielokąta o różnicę ruchu myszy
         ControlPoint? draggedControlPoint = null;
-        Edge? perpendicularFirstEdge = null;
+        Edge? perpendicularFirstEdge = null; // != null -> czekamy na kliknięcie drugiej krawędzi prostopadłości
 
         public Form1()
         {
@@ -32,11 +33,13 @@ namespace GK
             KeyDown += Form1_KeyDown;
         }
 
+        // rysowanie całej sceny przy każdym odświeżeniu panelu
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             drawer.DrawSpace(space, e.Graphics);
         }
 
+        // ruch myszy z wciśniętym przyciskiem: robimy to, co ustawił MouseDown
         private void panel_MouseMove(object sender, MouseEventArgs e)
         {
             if (draggingType == DraggingType.MovingVertex && draggedVertex != null && draggedPolygon != null)
@@ -59,6 +62,7 @@ namespace GK
             }
         }
 
+        // puszczenie przycisku kończy przeciąganie
         private void panel_MouseUp(object sender, MouseEventArgs e)
         {
             draggingType = DraggingType.None;
@@ -67,6 +71,10 @@ namespace GK
             draggedControlPoint = null;
         }
 
+        // Kliknięcie w trybie wybierania prostopadłości: lewy to wybór drugiej krawędzi, inny to rezygnacja
+        // ppm: menu wierzchołka albo krawędzi (z włączonymi tylko dozwolonymi opcjami)
+        // lpm: chwytamy punkt kontrolny, wierzchołek albo cały wielokąt (w tej kolejności)
+        // Wielokąty sprawdzamy od ostatniego, bo ten jest narysowany na wierzchu.
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
             if (perpendicularFirstEdge != null)
@@ -159,6 +167,7 @@ namespace GK
             }
         }
 
+        // usuwa wierzchołek, ograniczenia jego krawędzi i poprawia ciągłości
         private void deleteVertexToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (menuPolygon != null && menuVertex != null)
@@ -178,6 +187,7 @@ namespace GK
             panel.Invalidate();
         }
 
+        // dodaje wierzchołek w środku krawędzi, ograniczenia tej krawędzi znikają
         private void addVertexToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (menuPolygon != null && menuEdge != null)
@@ -191,6 +201,7 @@ namespace GK
             panel.Invalidate();
         }
 
+        // radio buttony podmieniają sposób rysowania (biblioteka / Bresenham)
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton1.Checked)
@@ -209,6 +220,7 @@ namespace GK
             }
         }
 
+        // przełączanie między odcinkiem a bezierem. Krzywa nie ma ograniczeń, więc je usuwamy
         private void bezierOnoffToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (menuEdge != null)
@@ -221,6 +233,8 @@ namespace GK
             panel.Invalidate();
         }
 
+        // Zadana długość - stare ograniczenie długości zdejmujemy, próbujemy dodać nowe
+        // jak się nie da, przywracamy stare i pokazujemy komunikat
         private void setLengthToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (menuEdge == null)
@@ -258,6 +272,7 @@ namespace GK
             panel.Invalidate();
         }
 
+        // usuwa wszystkie ograniczenia krawędzi
         private void removeConstraintsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (menuEdge != null)
@@ -283,7 +298,7 @@ namespace GK
             panel.Invalidate();
         }
 
-        // kliknięto drugą krawędź albo i nie xd
+        // kliknięto drugą krawędź albo i nie. sprawdzamy, czy można, i dodajemy prostopadłość
         private void FinishPerpendicular(Edge? secondEdge)
         {
             Edge firstEdge = perpendicularFirstEdge!;
@@ -330,6 +345,7 @@ namespace GK
             panel.Invalidate();
         }
 
+        // Esc przerywa wybieranie drugiej krawędzi
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape && perpendicularFirstEdge != null)
@@ -338,6 +354,7 @@ namespace GK
             }
         }
 
+        // wybór ciągłości z menu wierzchołka
         private void g0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetContinuity(Continuity.G0);
@@ -353,6 +370,7 @@ namespace GK
             SetContinuity(Continuity.C1);
         }
 
+        // ustawia ciągłość jako wybór użytkownika i od razu poprawia punkty kontrolne
         private void SetContinuity(Continuity continuity)
         {
             if (menuVertex != null)
@@ -364,6 +382,7 @@ namespace GK
             panel.Invalidate();
         }
 
+        // przełączanie między odcinkiem a łukiem. Łuk nie ma ograniczeń, więc je usuwamy
         private void arcOnoffToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (menuEdge != null)

@@ -7,6 +7,7 @@ using GK.algorithms;
 
 namespace GK.drawing
 {
+    // Rysowanie funkcjami biblioteki
     internal class LibraryLineDrawer : ILineDrawer
     {
         public void DrawLine(Graphics g, double x1, double y1, double x2, double y2, Color color)
@@ -19,6 +20,7 @@ namespace GK.drawing
 
         public void DrawArc(Graphics g, Arc arc, Color color)
         {
+            // Rysowanie łuku funkcjami biblioteki
             float left = (float)(arc.x - arc.radius);
             float top = (float)(arc.y - arc.radius);
             float width = (float)(arc.radius * 2);

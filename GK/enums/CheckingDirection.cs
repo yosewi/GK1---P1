@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace GK.enums
 {
+    // w którą stronę idzie algorytm sprawdzający ograniczenia
     public enum CheckingDirection
     {
-        Forward,
-        Backward,
+        Forward, // po kolejnych secondEdge
+        Backward, // po kolejnych firstEdge
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace GK.drawing
 {
+    // Rysowanie własnymi algorytmami: odcinek Bresenhamem, łuk MidpointCircle
     internal class BresenhamLineDrawer : ILineDrawer
     {
         public void DrawLine(Graphics g, double x1, double y1, double x2, double y2, Color color)

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace GK.algorithms
 {
+    // Piksele łuku algorytmem MidpointCircle
+    // Algorytm liczy jedną ósemkę okręgu o środku (0, 0): od punktu (0, R) w prawo, dopóki y > x.
+    // Pozostałe 7 ósemek dostajemy z symetrii, przesuwamy o środek łuku i zostawiamy tylko piksele, które leżą na łuku.
     public class MidpointCircle
     {
         public static List<(int x, int y)> FindPixels(Arc arc)
@@ -16,6 +19,8 @@ namespace GK.algorithms
             int centerY = (int)Math.Round(arc.y);
             int R = (int)Math.Round(arc.radius);
 
+            // d - zmienna decyzyjna: znak mówi, czy środek między kandydatami jest w środku okręgu czy poza nim
+            // deltaE, deltaSE - o ile zmieni się d po kroku E albo SE (też zmieniają się przy każdym kroku)
             int deltaE = 3;
             int deltaSE = 5 - 2 * R;
             int d = 1 - R;
@@ -44,6 +49,7 @@ namespace GK.algorithms
             return pixels;
         }
 
+        // Dodaje piksele z jednej ósemki okręgu, jeśli leżą na łuku
         private static void AddPixelsOnArc(List<(int x, int y)> pixels, Arc arc, int centerX, int centerY, int x, int y)
         {
             AddPixelIfOnArc(pixels, centerX, centerY, arc, x, y);
@@ -56,6 +62,8 @@ namespace GK.algorithms
             AddPixelIfOnArc(pixels, centerX, centerY, arc, -y, -x);
         }
 
+        // (seenFromAngleX, seenFromAngleY) - położenie piksela względem środka okręgu;
+        // dodajemy go (przesuniętego o środek) tylko wtedy, gdy jego kąt należy do łuku
         private static void AddPixelIfOnArc(List<(int x, int y)> pixels, int x, int y, Arc arc, int seenFromAngleX, int seenFromAngleY)
         {
             double angle = Math.Atan2(seenFromAngleY, seenFromAngleX);

@@ -7,6 +7,8 @@ using GK.algorithms;
 
 namespace GK.drawing
 {
+    // Jak rysować odcinki i łuki
+    // Są dwie wersje: biblioteczna i Bresenham
     internal interface ILineDrawer
     {
         void DrawLine(Graphics g, double x1, double y1, double x2, double y2, Color color);

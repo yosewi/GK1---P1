@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace GK.enums
 {
+    // wymagana ciągłość w wierzchołku obok krzywej
     public enum Continuity
     {
         G0,

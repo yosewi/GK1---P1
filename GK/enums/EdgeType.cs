@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace GK.enums
 {
+    // typ krawędzi
     public enum EdgeType
     {
         Line,

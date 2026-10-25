@@ -14,12 +14,15 @@ using System.Windows.Forms.VisualStyles;
 
 namespace GK.model
 {
+    // Rysuje całą scenę przy każdym odświeżeniu
+    // Odcinki i łuki rysuje przez lineDrawer (biblioteka albo Bresenham)
     internal class Drawer
     {
         public Edge? highlightedEdge { get; set; }
         private Pen dashedPen = new Pen(Color.Gray, 1) { DashStyle = DashStyle.Dash };
         public ILineDrawer lineDrawer { get; set; } = new LibraryLineDrawer();
 
+        // najpierw wszystkie wielokąty, potem napisy, żeby żadna krawędź ich nie zasłoniła
         public void DrawSpace(Space space, Graphics graphics)
         {
             foreach (Polygon polygon in space.polygons)
@@ -44,6 +47,7 @@ namespace GK.model
             }
         }
 
+        // krawędzie według typu, potem wierzchołki jako kropki
         public void DrawPolygon(Polygon polygon, Graphics graphics)
         {
             foreach (Edge edge in polygon.edges)
@@ -73,6 +77,7 @@ namespace GK.model
             }
         }
 
+        // napisy ograniczeń krawędzi obok środka krawędzi
         private void DrawConstraintLabels(Edge edge, Graphics graphics)
         {
             if (edge.constraints.Count == 0)
@@ -91,6 +96,7 @@ namespace GK.model
             graphics.DrawString(text, Label.DefaultFont, Brushes.Blue, (float)mx + 6, (float)my + 6);
         }
 
+        // rysuje krawędź Béziera jako krzywą, a do niej linie przerywane do punktów kontrolnych i same punkty kontrolne
         private void DrawBezierEdge(Edge edge, Graphics graphics)
         {
             Vertex v0 = edge.startVertex;
@@ -110,6 +116,7 @@ namespace GK.model
             graphics.FillRectangle(Brushes.Orange, (float)c2.x - 4, (float)c2.y - 4, 8, 8);
         }
 
+        // punkty z BezierCurve łączy krótkimi odcinkami
         private void DrawBezierCurve(Graphics graphics, Vertex v0, ControlPoint v1, ControlPoint v2, Vertex v3, Color color)
         {
             List<(double x, double y)> points = BezierCurve.FindPoints(v0, v1, v2, v3);
@@ -120,6 +127,7 @@ namespace GK.model
             }
         }
 
+        // napis G0/G1/C1 przy wierzchołku - tylko gdy obok jest krzywa, bo tylko wtedy ciągłość ma znaczenie
         private void DrawContinuityLabel(Vertex vertex, Graphics graphics)
         {
             if (!vertex.HasCurveNeighbour)
@@ -129,6 +137,7 @@ namespace GK.model
             graphics.DrawString(vertex.continuity.ToString(), Label.DefaultFont, Brushes.DarkGreen, (float)vertex.x + 8, (float)vertex.y - 20);
         }
 
+        // łuk liczony od nowa z wierzchołków
         private void DrawArcEdge(Edge edge, Graphics graphics)
         {
             Arc? arc = ArcCurve.FindArcShape(edge);

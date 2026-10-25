@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace GK.enums
 {
+    // co aktualnie ciągnie mysz
     public enum DraggingType
     {
         None,
