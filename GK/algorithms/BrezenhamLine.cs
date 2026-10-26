@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 namespace GK.algorithms
 {
     // Piksele odcinka algorytmem Bresenhama
-    // Algorytm ze slajdu umie tylko jeden przypadek - odcinek idący w prawo i płaski
-    // Resztę sprowadzamy do niego: zamiana osi (stromy odcinek), zamiana końców (odcinek w lewo), direction (w dół/w górę)
     internal static class BrezenhamLine
     {
         public static List<(int x, int y)> FindPixels(double x1, double y1, double x2, double y2)
