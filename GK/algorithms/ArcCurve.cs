@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 
 namespace GK.algorithms
 {
+    // Liczy kształt łuku dla krawędzi typu Arc
+    // G0 w obu końcach -> półokrąg, G1 w jednym końcu -> łuk z tym samym kierunkiem co sąsiad
     public class ArcCurve
     {
         private const double MaxRadius = 10000;
 
+        // zwraca łuk krawędzi albo null
         public static Arc? FindArcShape(Edge edge)
         {
             Vertex start = edge.startVertex;
@@ -53,6 +56,7 @@ namespace GK.algorithms
         }
 
         // Łuk przez oba końce krawędzi, który w wierzchołku tangentVertex ma kierunek tangent.
+        // null, gdy takiego łuku nie da się sensownie narysować
         private static Arc? ArcWithTangent(Edge edge, Vertex tangentVertex, (double x, double y) tangent)
         {
             double tangentLength = Geometry.VectorLength(tangent);
@@ -62,7 +66,8 @@ namespace GK.algorithms
                 return Halfcircle(edge);
             }
 
-            // Środek okręgu.
+            // Środek okręgu. Promień jest prostopadły do stycznej, więc środek leży na prostej
+            // przez tangentVertex w kierunku normal (styczna obrócona o 90 stopni, długość 1)
             Vertex otherVertex = edge.OtherVertex(tangentVertex);
             (double x, double y) normal = (-tangent.y / tangentLength, tangent.x / tangentLength);
             (double x, double y) d = Geometry.VectorFromTo(tangentVertex.x, tangentVertex.y, otherVertex.x, otherVertex.y);
@@ -73,7 +78,7 @@ namespace GK.algorithms
                 return null;
             }
 
-            double offset = (d.x * d.x + d.y * d.y) / (2 * dAlongNormal);   // po której stronie stycznej jest środek
+            double offset = (d.x * d.x + d.y * d.y) / (2 * dAlongNormal); // po której stronie stycznej jest środek
             double radius = Math.Abs(offset);
             if (radius > MaxRadius)
             {
@@ -84,6 +89,8 @@ namespace GK.algorithms
             double centerY = tangentVertex.y + offset * normal.y;
 
             // Kąty końców i sweep (o ile kątów idziemy od startVertex do endVertex).
+            // offset > 0 -> środek po stronie normal
+            // Jeśli różnica kątów wyszła z drugim znakiem, idziemy dookoła: dodajemy albo odejmujemy pełny obrót
             Vertex start = edge.startVertex;
             Vertex end = edge.endVertex;
             double startAngle = Math.Atan2(start.y - centerY, start.x - centerX);
@@ -103,12 +110,14 @@ namespace GK.algorithms
         }
 
         // Kierunek, w którym krzywa ma przechodzić przez wierzchołek v z G1
+        // Łuk dopasowuje się do sąsiada, więc to kierunek sąsiedniej krawędzi.
         private static (double x, double y) TangentAtG1Vertex(Vertex v)
         {
             Edge incoming = v.firstEdge;
             Edge outgoing = v.secondEdge;
 
-            // Dwa łuki
+            // Dwa łuki: żaden nie może dopasować się do drugiego (każdy czekałby na drugi),
+            // więc oba leżą na jednym okręgu przez U
             if (incoming.type == EdgeType.Arc && outgoing.type == EdgeType.Arc)
             {
                 Vertex U = incoming.startVertex;

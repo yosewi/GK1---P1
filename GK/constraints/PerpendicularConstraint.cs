@@ -117,14 +117,6 @@ namespace GK.constraints
             }
         }
 
-        // true, gdy nextEdge to prostopadla para (prostopadłość dwóch sąsiednich krawędzi) i nextEdge może się swobodnie obracać. 
-        // Algorytm poprawiajacy wielokat nie rusza wtedy wspólnego rogu, tylko w następnym kroku obraca nextEdge wokół tego rogu.
-        public override bool CanWaitForFix(Edge nextEdge)
-        {
-            bool nextEdgeIsOurPair = nextEdge == first || nextEdge == second;
-            return nextEdgeIsOurPair && CanRotateFreely(nextEdge);
-        }
-
         // druga krawędź prostopadlej pary - wzorzec
         private Edge OtherEdge(Edge edge)
         {
@@ -166,19 +158,6 @@ namespace GK.constraints
                 }
             }
             return false;
-        }
-
-        // krawędź nie ma innej prostopadłości. Inna prostopadłość trzyma jej kierunek, a ograniczenie długości w obrocie nie przeszkadza.
-        private bool CanRotateFreely(Edge edge)
-        {
-            foreach (Constraint c in edge.constraints)
-            {
-                if (c is PerpendicularConstraint && c != this)
-                {
-                    return false;
-                }
-            }
-            return true;
         }
 
         // obrót przesuwa vertexToMove w bok, więc następna krawędź (po drugiej stronie vertexToMove) zmienia kierunek. 

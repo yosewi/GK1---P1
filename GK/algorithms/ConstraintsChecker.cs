@@ -298,8 +298,6 @@ namespace GK.algorithms
 
         // Poprawia ograniczenia krawędzi. FixedVertex zostaje, rusza się jej drugi koniec.
         // nextEdge - krawędź, którą sprawdzimy zaraz po tej.
-        // Ograniczenie pomijamy, gdy: jest już spełnione, może poczekać na następny krok (CanWaitForFix)
-        // albo w drugiej rundzie jest wspólne z nextEdge (następny krok i tak się nim zajmie).
         private static void FixEdgeConstraints(Edge edge, Vertex fixedVertex, Edge nextEdge)
         {
             // dwie rundy, bo krawędź może mieć kilka ograniczeń i poprawienie jednego czasem psuje inne
@@ -309,11 +307,6 @@ namespace GK.algorithms
                 foreach (Constraint c in edge.constraints)
                 {
                     if (c.IsDone())
-                    {
-                        continue;
-                    }
-
-                    if (c.CanWaitForFix(nextEdge))
                     {
                         continue;
                     }

@@ -17,10 +17,5 @@ namespace GK.constraints
         public abstract bool IsDone();
         // poprawia krawędź edge: fixedVertex zostaje w miejscu, rusza się drugi koniec krawędzi
         public abstract void Fix(Edge edge, Vertex fixedVertex);
-        // czy poprawianie może poczekać, aż dojdziemy do nextEdge (domyślnie nie)
-        public virtual bool CanWaitForFix(Edge nextEdge)
-        {
-            return false;
-        }
     }
 }
