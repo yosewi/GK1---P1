@@ -20,19 +20,19 @@ namespace GK.model
         public Space CreateSpace()
         {
             Space space = new Space();
-            Polygon teacherPolygon = CreateTeacherPolygon(space);
-            CreateConstraintsPolygon(space);
-            Polygon curvesPolygon = CreateCurvesPolygon(space);
+            Polygon Polygon1 = CreatePolygon1(space);
+            CreatePolygon2(space);
+            Polygon Polygon3 = CreatePolygon3(space);
 
-            ConstraintsChecker.TryAddConstraint(space, new PerpendicularConstraint(curvesPolygon.edges[6], teacherPolygon.edges[7]));
+            ConstraintsChecker.TryAddConstraint(space, new PerpendicularConstraint(Polygon3.edges[6], Polygon1.edges[7]));
 
             return space;
         }
 
-        private Polygon CreateTeacherPolygon(Space space)
+        private Polygon CreatePolygon1(Space space)
         {
-            Polygon polygon = AddPolygon(space, (200, 50), (300, 100), (450, 190), (1000, 200), (1000, 500),
-                                                (900, 400), (800, 450), (650, 425), (450, 425), (75, 250));
+            Polygon polygon = AddPolygon(space, (260, 50), (360, 100), (510, 190), (1060, 200), (1060, 500),
+                                    (960, 400), (860, 450), (710, 425), (510, 425), (135, 250));
 
             polygon.edges[2].SelectBezier();
             polygon.edges[5].SelectArc();
@@ -48,9 +48,9 @@ namespace GK.model
             return polygon;
         }
 
-        private Polygon CreateConstraintsPolygon(Space space)
+        private Polygon CreatePolygon2(Space space)
         {
-            Polygon polygon = AddPolygon(space, (1030, 70), (1150, 70), (1150, 190), (1090, 250), (1150, 310), (1030, 310));
+            Polygon polygon = AddPolygon(space, (1090, 70), (1210, 70), (1210, 190), (1150, 250), (1210, 310), (1090, 310));
 
             ConstraintsChecker.TryAddConstraint(space, new LengthConstraint(polygon.edges[0], 120));
             ConstraintsChecker.TryAddConstraint(space, new LengthConstraint(polygon.edges[1], 120));
@@ -61,9 +61,9 @@ namespace GK.model
             return polygon;
         }
 
-        private Polygon CreateCurvesPolygon(Space space)
+        private Polygon CreatePolygon3(Space space)
         {
-            Polygon polygon = AddPolygon(space, (240, 565), (480, 550), (720, 550), (930, 550), (930, 670), (600, 685), (240, 685));
+            Polygon polygon = AddPolygon(space, (300, 565), (540, 550), (780, 550), (990, 550), (990, 670), (660, 685), (300, 685));
 
             polygon.edges[0].SelectBezier();
             polygon.edges[3].SelectArc(); 

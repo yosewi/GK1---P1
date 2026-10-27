@@ -30,6 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             panel = new BufferingPanel();
+            button1 = new Button();
             panel1 = new Panel();
             groupBox1 = new GroupBox();
             radioButton2 = new RadioButton();
@@ -46,6 +47,7 @@
             removeConstraintsToolStripMenuItem = new ToolStripMenuItem();
             perpendicularToToolStripMenuItem = new ToolStripMenuItem();
             arcOnoffToolStripMenuItem = new ToolStripMenuItem();
+            button2 = new Button();
             panel.SuspendLayout();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -55,6 +57,8 @@
             // 
             // panel
             // 
+            panel.Controls.Add(button2);
+            panel.Controls.Add(button1);
             panel.Controls.Add(panel1);
             panel.Dock = DockStyle.Fill;
             panel.Location = new Point(0, 0);
@@ -65,6 +69,16 @@
             panel.MouseDown += panel_MouseDown;
             panel.MouseMove += panel_MouseMove;
             panel.MouseUp += panel_MouseUp;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(3, 118);
+            button1.Name = "button1";
+            button1.Size = new Size(186, 29);
+            button1.TabIndex = 1;
+            button1.Text = "Documentation";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // panel1
             // 
@@ -154,49 +168,59 @@
             EdgeContextMenu.ImageScalingSize = new Size(20, 20);
             EdgeContextMenu.Items.AddRange(new ToolStripItem[] { addVertexToolStripMenuItem, bezierOnoffToolStripMenuItem, setLengthToolStripMenuItem, removeConstraintsToolStripMenuItem, perpendicularToToolStripMenuItem, arcOnoffToolStripMenuItem });
             EdgeContextMenu.Name = "EdgeContextMenu";
-            EdgeContextMenu.Size = new Size(211, 176);
+            EdgeContextMenu.Size = new Size(208, 148);
             // 
             // addVertexToolStripMenuItem
             // 
             addVertexToolStripMenuItem.Name = "addVertexToolStripMenuItem";
-            addVertexToolStripMenuItem.Size = new Size(210, 24);
+            addVertexToolStripMenuItem.Size = new Size(207, 24);
             addVertexToolStripMenuItem.Text = "Add vertex";
             addVertexToolStripMenuItem.Click += addVertexToolStripMenuItem_Click;
             // 
             // bezierOnoffToolStripMenuItem
             // 
             bezierOnoffToolStripMenuItem.Name = "bezierOnoffToolStripMenuItem";
-            bezierOnoffToolStripMenuItem.Size = new Size(210, 24);
+            bezierOnoffToolStripMenuItem.Size = new Size(207, 24);
             bezierOnoffToolStripMenuItem.Text = "Bezier on/off";
             bezierOnoffToolStripMenuItem.Click += bezierOnoffToolStripMenuItem_Click;
             // 
             // setLengthToolStripMenuItem
             // 
             setLengthToolStripMenuItem.Name = "setLengthToolStripMenuItem";
-            setLengthToolStripMenuItem.Size = new Size(210, 24);
+            setLengthToolStripMenuItem.Size = new Size(207, 24);
             setLengthToolStripMenuItem.Text = "Set length";
             setLengthToolStripMenuItem.Click += setLengthToolStripMenuItem_Click;
             // 
             // removeConstraintsToolStripMenuItem
             // 
             removeConstraintsToolStripMenuItem.Name = "removeConstraintsToolStripMenuItem";
-            removeConstraintsToolStripMenuItem.Size = new Size(210, 24);
+            removeConstraintsToolStripMenuItem.Size = new Size(207, 24);
             removeConstraintsToolStripMenuItem.Text = "Remove constraints";
             removeConstraintsToolStripMenuItem.Click += removeConstraintsToolStripMenuItem_Click;
             // 
             // perpendicularToToolStripMenuItem
             // 
             perpendicularToToolStripMenuItem.Name = "perpendicularToToolStripMenuItem";
-            perpendicularToToolStripMenuItem.Size = new Size(210, 24);
+            perpendicularToToolStripMenuItem.Size = new Size(207, 24);
             perpendicularToToolStripMenuItem.Text = "Perpendicular to...";
             perpendicularToToolStripMenuItem.Click += perpendicularToToolStripMenuItem_Click;
             // 
             // arcOnoffToolStripMenuItem
             // 
             arcOnoffToolStripMenuItem.Name = "arcOnoffToolStripMenuItem";
-            arcOnoffToolStripMenuItem.Size = new Size(210, 24);
+            arcOnoffToolStripMenuItem.Size = new Size(207, 24);
             arcOnoffToolStripMenuItem.Text = "Arc on/off";
             arcOnoffToolStripMenuItem.Click += arcOnoffToolStripMenuItem_Click;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(2, 146);
+            button2.Name = "button2";
+            button2.Size = new Size(187, 29);
+            button2.TabIndex = 2;
+            button2.Text = "F11 = fullscreen";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // Form1
             // 
@@ -234,5 +258,7 @@
         private ToolStripMenuItem g1ToolStripMenuItem;
         private ToolStripMenuItem C1ToolStripMenuItem;
         private ToolStripMenuItem arcOnoffToolStripMenuItem;
+        private Button button1;
+        private Button button2;
     }
 }

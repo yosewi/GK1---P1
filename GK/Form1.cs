@@ -394,5 +394,31 @@ namespace GK
             menuPolygon = null;
             panel.Invalidate();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string text =
+    "Obsługa: lewy przycisk myszy przeciąga wierzchołek, punkt kontrolny albo cały wielokąt. " +
+    "Prawy przycisk otwiera menu wierzchołka (usunięcie, ciągłość G0/G1/C1) albo krawędzi " +
+    "(dodanie wierzchołka, Bézier, łuk, długość, prostopadłość, usunięcie ograniczeń). " +
+    "Wybranie prostopadłości wymaga kliknięcia drugiej krawędzi, do której pierwsza ma być prostopadła. " +
+    "Esc anuluje wybieranie drugiej krawędzi prostopadłości, F11 włącza pełny ekran.\n\n" +
+    "Założenia: ograniczenia mają tylko odcinki, przeciągany punkt zawsze podąża za kursorem, " +
+    "a gdy ograniczeń nie da się spełnić, przesuwa się cały wielokąt.\n\n" +
+    "Model danych: przestrzeń to lista wielokątów złożonych z wierzchołków i krawędzi, " +
+    "a każda krawędź ma typ (odcinek, Bézier, łuk) i listę ograniczeń.\n\n" +
+    "Algorytm ograniczeń: od przeciąganego wierzchołka poprawiamy kolejne krawędzie w przód i w tył, " +
+    "zatrzymując się na pierwszej krawędzi, która spełnia swoje ograniczenia.\n\n" +
+    "Ciągłość i rysowanie: punkty kontrolne Béziera dopasowują się do sąsiednich krawędzi (G0/G1/C1), " +
+    "a odcinki i łuki rysujemy algorytmami Bresenhama i MidpointCircle.\n\n" +
+    "Więcej szczegółów w README i w komentarzach w kodzie.";
+
+            MessageBox.Show(this, text, "Dokumentacja", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
