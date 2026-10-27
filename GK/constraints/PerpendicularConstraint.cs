@@ -77,6 +77,7 @@ namespace GK.constraints
             double py = referenceXdif / referenceLength;
 
             // drugi pomysł na nowe miejsce (zamiast obracać, można przesunąć)
+            // wtedy algorytm sprawdzający ograniczenia ma dużo mniej do sprawdzenia
             (double x, double y) startPosition = (vertexToMove.x, vertexToMove.y);
             (double x, double y)? slidePosition = PositionAfterSlideAlongNextEdge(edge, fixedVertex, vertexToMove, (px, py));
 
@@ -181,7 +182,10 @@ namespace GK.constraints
             }
             (double x, double y) nextEdgeDirection = Geometry.SameDirectionWithLength(nextEdgeVector, 1);
 
-            // punkt wspólny dwóch prostych
+            // Szukamy miejsca dla vertexToMove, które leży na dwóch prostych naraz:
+            // prosta przez fixedVertex w kierunku prostopadłym do wzorca, bo tam edge jest prostopadła do wzorca
+            // prosta, na której leży nextEdge, bo tam nextEdge nie zmienia kierunku, tylko długość
+            // Punkt wspólny tych prostych spełnia oba warunki naraz
             (double x, double y)? crossing = Geometry.CrossingOfLines((fixedVertex.x, fixedVertex.y), perpendicularDirection, (nextEdgeFarEnd.x, nextEdgeFarEnd.y), nextEdgeDirection);
             if (crossing == null)
             {

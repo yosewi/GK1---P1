@@ -79,7 +79,7 @@ namespace GK.algorithms
             {
                 return null;
             }
-
+       
             (double x, double y) fromPoint1ToPoint2 = VectorFromTo(point1.x, point1.y, point2.x, point2.y);
             double a = (fromPoint1ToPoint2.x * direction2.y - fromPoint1ToPoint2.y * direction2.x) / sinOfAngle;
 

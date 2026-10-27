@@ -290,7 +290,6 @@ namespace GK
             if (menuEdge != null)
             {
                 perpendicularFirstEdge = menuEdge;
-                drawer.highlightedEdge = menuEdge;
                 panel.Cursor = Cursors.Cross;
             }
             menuEdge = null;
