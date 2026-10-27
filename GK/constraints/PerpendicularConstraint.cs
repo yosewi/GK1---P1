@@ -161,6 +161,17 @@ namespace GK.constraints
             return false;
         }
 
+        // czy któraś sąsiednia krawędź edge jest już prostopadła do reference.
+        // wtedy edge i ten sąsiad byłyby prostopadłe do tej samej krawędzi, czyli równoległe,
+        // a skoro mają wspólny wierzchołek to leżałyby na jednej prostej albo złożone jedna na drugą
+        public static bool NeighbourIsPerpendicularTo(Edge edge, Edge reference)
+        {
+            Edge previous = edge.startVertex.firstEdge;
+            Edge next = edge.endVertex.secondEdge;
+
+            return (previous != reference && Exists(previous, reference)) || (next != reference && Exists(next, reference));
+        }
+
         // obrót przesuwa vertexToMove w bok, więc następna krawędź (po drugiej stronie vertexToMove) zmienia kierunek. 
         // jeśli też ma prostopadłość, psuje się, a algorytm sprawddzajacy ograniczenia musi iść dalej i dłużej
         // dlatego przesuwamy vertexToMove po prostej następnej krawędzi. Ona zmienia wtedy tylko długość, a jej kierunek i prostopadłość zostają,

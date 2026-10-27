@@ -326,6 +326,12 @@ namespace GK
                 return;
             }
 
+            if (PerpendicularConstraint.NeighbourIsPerpendicularTo(firstEdge, secondEdge) || PerpendicularConstraint.NeighbourIsPerpendicularTo(secondEdge, firstEdge))
+            {
+                MessageBox.Show("Dwie sąsiednie krawędzie nie mogą być prostopadłe do tej samej krawędzi.", "Ograniczenie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             PerpendicularConstraint constraint = new PerpendicularConstraint(firstEdge, secondEdge);
             if (!ConstraintsChecker.TryAddConstraint(space, constraint))
             {
