@@ -65,15 +65,6 @@ namespace GK.model
         {
             Polygon polygon = AddPolygon(space, (300, 565), (540, 550), (780, 550), (990, 550), (990, 670), (660, 685), (300, 685));
 
-            polygon.edges[0].SelectBezier();
-            polygon.edges[3].SelectArc(); 
-            polygon.edges[2].SelectBezier();               
-            polygon.vertices[2].SetContinuity(Continuity.G1);
-
-            ConstraintsChecker.TryAddConstraint(space, new LengthConstraint(polygon.edges[1], 240));
-            ConstraintsChecker.TryAddConstraint(space, new LengthConstraint(polygon.edges[5], 360));
-            ConstraintsChecker.TryAddConstraint(space, new PerpendicularConstraint(polygon.edges[5], polygon.edges[6]));
-
             return polygon;
         }
 

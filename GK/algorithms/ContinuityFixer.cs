@@ -8,18 +8,18 @@ using GK.objects;
 
 namespace GK.algorithms
 {
-    // Pilnuje ciągłości (G1, C1) w wierzchołkach obok Béziera: ustawia punkt kontrolny przy wierzchołku
-    // tak, żeby wektor styczny Béziera pasował do wektora stycznego krawędzi po drugiej stronie.
+    // Pilnuje ciągłości (G1, C1) w wierzchołkach obok Beziera: ustawia punkt kontrolny przy wierzchołku
+    // tak, żeby wektor styczny Beziera pasował do wektora stycznego krawędzi po drugiej stronie.
     // G1 - ten sam kierunek stycznych, C1 - ten sam wektor (kierunek i długość). Przy G0 nic nie robimy.
-    // ogólnie rusza tylko punkty kontrolne Bézierów, nie rusza wierzchołków.
+    // ogólnie rusza tylko punkty kontrolne Bezierów, nie rusza wierzchołków.
     internal static class ContinuityFixer
     {
         private const double TangentVectorToHandleRatio = 3; // bo P′(0) = 3(V1 − V0)
 
         // Przywraca ciągłość w wierzchołku v - dopasowuje się zawsze tylko jedna strona:
-        // jak Bézier wychodzi z v (czyli jest jego secondEdge), to dopasowuje się do krawędzi wchodzącej,
-        // wpw Bézier wchodzący dopasowuje się do krawędzi wychodzącej.
-        // Przy dwóch Bézierach dopasowuje się wychodzący.
+        // jak Bezier wychodzi z v (czyli jest jego secondEdge), to dopasowuje się do krawędzi wchodzącej,
+        // wpw Bezier wchodzący dopasowuje się do krawędzi wychodzącej.
+        // Przy dwóch Bezierach dopasowuje się wychodzący.
         public static void FixVertex(Vertex v)
         {
             if (v.secondEdge.type == EdgeType.Bezier)
@@ -55,16 +55,16 @@ namespace GK.algorithms
             }
         }
 
-        // ustawia controlPoint1 wychodzącego Béziera tak, żeby pasował do krawędzi wchodzącej
+        // ustawia controlPoint1 wychodzącego Beziera tak, żeby pasował do krawędzi wchodzącej
         public static void FitOutgoingControlPoint(Vertex v)
         {
-            // nic nie robimy przy G0, gdy krawędź wychodząca nie jest Bézierem albo gdy obok jest łuk (wtedy to łuk dopasowuje się do Béziera)
+            // nic nie robimy przy G0, gdy krawędź wychodząca nie jest Bezierem albo gdy obok jest łuk (wtedy to łuk dopasowuje się do Beziera)
             if (v.continuity == Continuity.G0 || v.secondEdge.type != EdgeType.Bezier || v.HasArcNeighbour)
             {
                 return;
             }
 
-            // jaka ma być styczna Béziera w v (na podstawie stycznej krawędzi wchodzącej) -> gdzie postawić controlPoint1
+            // jaka ma być styczna Beziera w v (na podstawie stycznej krawędzi wchodzącej) -> gdzie postawić controlPoint1
             (double x, double y) requiredTangent = RequiredTangentVector(v.continuity, TangentVectorOfIncomingEdge(v), TangentVectorOfOutgoingEdge(v));
             (double x, double y) newPosition = PositionOfOutgoingControlPoint(v, requiredTangent);
 
@@ -72,16 +72,16 @@ namespace GK.algorithms
             v.secondEdge.controlPoint1!.y = newPosition.y;
         }
 
-        // ustawia controlPoint2 wchodzącego Béziera tak, żeby pasował do krawędzi wychodzącej
+        // ustawia controlPoint2 wchodzącego Beziera tak, żeby pasował do krawędzi wychodzącej
         public static void FitIncomingControlPoint(Vertex v)
         {
-            // nic nie robimy przy G0, gdy krawędź wychodząca nie jest Bézierem albo gdy obok jest łuk (wtedy to łuk dopasowuje się do Béziera)
+            // nic nie robimy przy G0, gdy krawędź wychodząca nie jest Bezierem albo gdy obok jest łuk (wtedy to łuk dopasowuje się do Beziera)
             if (v.continuity == Continuity.G0 || v.firstEdge.type != EdgeType.Bezier || v.HasArcNeighbour)
             {
                 return;
             }
 
-            // jaka ma być styczna Béziera w v (na podstawie stycznej krawędzi wychodzącej) -> gdzie postawić controlPoint
+            // jaka ma być styczna Beziera w v (na podstawie stycznej krawędzi wychodzącej) -> gdzie postawić controlPoint
             (double x, double y) requiredTangent = RequiredTangentVector(v.continuity, TangentVectorOfOutgoingEdge(v), TangentVectorOfIncomingEdge(v));
             (double x, double y) newPosition = PositionOfIncomingControlPoint(v, requiredTangent);
 
@@ -90,7 +90,7 @@ namespace GK.algorithms
         }
 
         // jaka ma byc styczna po naszej stronie
-        // tangentOnOtherSide - styczna krawędzi po drugiej stronie wierzchołka, currentTangent - obecna styczna Béziera
+        // tangentOnOtherSide - styczna krawędzi po drugiej stronie wierzchołka, currentTangent - obecna styczna Beziera
         private static (double x, double y) RequiredTangentVector(Continuity continuity, (double x, double y) tangentOnOtherSide, (double x, double y) currentTangent)
         {
             // dokładnie styczna z drugiej strony

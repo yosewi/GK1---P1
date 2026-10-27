@@ -1,7 +1,7 @@
 ## Obsługa
 
 Lewy przycisk myszy przeciąga wierzchołek, punkt kontrolny albo cały wielokąt.
-Prawy przycisk otwiera menu wierzchołka (usunięcie, ciągłość G0/G1/C1) albo krawędzi (dodanie wierzchołka, Bézier, łuk, długość, prostopadłość, usunięcie ograniczeń).
+Prawy przycisk otwiera menu wierzchołka (usunięcie, ciągłość G0/G1/C1) albo krawędzi (dodanie wierzchołka, Bezier, łuk, długość, prostopadłość, usunięcie ograniczeń).
 Wybranie prostopadłości wymaga kliknięcia drugiej krawędzi, do której pierwsza ma być prostopadła.
 Esc anuluje wybieranie drugiej krawędzi prostopadłości, F11 włącza pełny ekran.
 
@@ -13,7 +13,7 @@ Gdy ograniczeń nie da się spełnić, przesuwa się cały wielokąt, lub w wypa
 
 ## Model danych
 
-Przestrzeń to lista wielokątów, wielokąt to wierzchołki i krawędzie, a krawędź ma typ (odcinek, Bézier, łuk) i listę ograniczeń.
+Przestrzeń to lista wielokątów, wielokąt to wierzchołki i krawędzie, a krawędź ma typ (odcinek, Bezier, łuk) i listę ograniczeń.
 Wierzchołek zna swoją ciągłość i obie swoje krawędzie, a ograniczenie jest klasą z metodami IsDone (czy jest spełnione) i Fix (popraw krawędź), więc nowe ograniczenie to nowa klasa.
 
 ## Algorytm ograniczeń
@@ -25,9 +25,9 @@ Długość poprawiamy, przesuwając dalszy koniec wzdłuż krawędzi, a prostopa
 
 ## Ciągłość
 
-Po każdym ruchu punkty kontrolne Béziera dopasowują się do sąsiedniej krawędzi.
+Po każdym ruchu punkty kontrolne Beziera dopasowują się do sąsiedniej krawędzi.
 
 ## Rysowanie
 
 Odcinki algorytmem Bresenhama, łuki algorytmem MidpointCircle, uogólnione dla wszystkich 8 kierunków.
-Bézier to punkty liczone metodą przyrostową, połączone odcinkami.
+Bezier to punkty liczone metodą przyrostową, połączone odcinkami.

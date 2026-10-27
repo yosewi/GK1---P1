@@ -96,7 +96,7 @@ namespace GK.model
             graphics.DrawString(text, Label.DefaultFont, Brushes.Blue, (float)mx + 6, (float)my + 6);
         }
 
-        // rysuje krawędź Béziera jako krzywą, a do niej linie przerywane do punktów kontrolnych i same punkty kontrolne
+        // rysuje krawędź Beziera jako krzywą, a do niej linie przerywane do punktów kontrolnych i same punkty kontrolne
         private void DrawBezierEdge(Edge edge, Graphics graphics)
         {
             Vertex v0 = edge.startVertex;

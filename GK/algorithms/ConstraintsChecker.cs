@@ -105,7 +105,7 @@ namespace GK.algorithms
         // Przeciąganie punktu kontrolnego: punkt kontrolny zawsze staje pod kursorem,
         // a potem dopasowuje się otherEdge - krawędź po drugiej stronie jego wierzchołka:
         // G0 -> nic, punkty są niezależne, łuk -> nic, łuk przeliczy się sam przy rysowaniu
-        // Bézier -> ustawiamy jego punkt kontrolny, wierzchołki stoją
+        // Bezier -> ustawiamy jego punkt kontrolny, wierzchołki stoją
         // odcinek -> obracamy go. wierzchołek ruszamy dopiero, gdy odcinek nie da rady
         public static void MoveControlPoint(Polygon polygon, ControlPoint controlPoint, double x, double y)
         {
@@ -128,7 +128,7 @@ namespace GK.algorithms
                 return;
             }
 
-            // Bézier -> ustawiamy jego punkt kontrolny przy tym wierzchołku, wierzchołków nie ruszamy
+            // Bezier -> ustawiamy jego punkt kontrolny przy tym wierzchołku, wierzchołków nie ruszamy
             if (otherEdge.type == EdgeType.Bezier)
             {
                 ContinuityFixer.FitControlPointOfEdgeAtVertex(otherEdge, vertex);
@@ -179,7 +179,7 @@ namespace GK.algorithms
             return Geometry.Distance(controlPoint.x, controlPoint.y, x, y) < 0.01;
         }
 
-        // otherEdge (odcinek) ma przedłużać styczną Béziera za wierzchołkiem. Jej drugi koniec (otherEdgeEnd) leży na prostej
+        // otherEdge (odcinek) ma przedłużać styczną Beziera za wierzchołkiem. Jej drugi koniec (otherEdgeEnd) leży na prostej
         // od punktu kontrolnego przez wierzchołek, po drugiej stronie wierzchołka.
         // G1 -> tylko obrót (długość zostaje), C1 -> dodatkowo długość = 3 * controlPointDistance (bo P'(0) = 3(V1 - V0)).
         private static void AdjustOtherEdgeToControlPoint(Polygon polygon, Vertex vertex, ControlPoint controlPoint, Edge otherEdge)
@@ -401,7 +401,7 @@ namespace GK.algorithms
             }
         }
 
-        // punkty kontrolne wszystkich Bézierów jadą za swoimi wierzchołkami
+        // punkty kontrolne wszystkich Bezierów jadą za swoimi wierzchołkami
         private static void MoveControlPointsWithVertices(Polygon polygon)
         {
             foreach (Edge edge in polygon.edges)
