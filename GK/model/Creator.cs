@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 namespace GK.model
 {
     // Scena startowa.
-    // Każdy wielokąt ma swoją metodę Create...Polygon - nowy wielokąt to nowa metoda i jedna linia w CreateSpace.
-    // Wierzchołki podajemy zgodnie z ruchem wskazówek zegara (na ekranie), wtedy półokręgi łuków wychodzą na zewnątrz.
+    // Każdy wielokąt ma swoją metodę CreatePolygon - nowy wielokąt to nowa metoda i jedna linia w CreateSpace.
+    // Wierzchołki podane zgodnie z ruchem wskazówek zegara (na ekranie), są takie, że półokręgi łuków wychodzą na zewnątrz.
     internal class Creator
     {
         public Creator() { }

@@ -105,7 +105,7 @@ namespace GK.algorithms
         // Przeciąganie punktu kontrolnego: punkt kontrolny zawsze staje pod kursorem,
         // a potem dopasowuje się otherEdge - krawędź po drugiej stronie jego wierzchołka:
         // G0 -> nic, punkty są niezależne, łuk -> nic, łuk przeliczy się sam przy rysowaniu
-        // Bézier -> ustawiamy jego punkt kontrolny (C1 symetrycznie, G1 tylko kierunek), wierzchołki stoją
+        // Bézier -> ustawiamy jego punkt kontrolny, wierzchołki stoją
         // odcinek -> obracamy go. wierzchołek ruszamy dopiero, gdy odcinek nie da rady
         public static void MoveControlPoint(Polygon polygon, ControlPoint controlPoint, double x, double y)
         {
@@ -302,7 +302,7 @@ namespace GK.algorithms
         {
             // dwie rundy, bo krawędź może mieć kilka ograniczeń i poprawienie jednego czasem psuje inne
             // druga runda poprawia to, co zepsuła pierwsza
-            for (int round = 0; round < 2; round++)
+            for (int i = 0; i < 2; i++)
             {
                 foreach (Constraint c in edge.constraints)
                 {
@@ -311,7 +311,7 @@ namespace GK.algorithms
                         continue;
                     }
 
-                    if (round > 0 && c.Edges.Contains(nextEdge))
+                    if (i > 0 && c.Edges.Contains(nextEdge))
                     {
                         continue;
                     }

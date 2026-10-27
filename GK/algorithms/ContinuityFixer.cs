@@ -11,6 +11,7 @@ namespace GK.algorithms
     // Pilnuje ciągłości (G1, C1) w wierzchołkach obok Béziera: ustawia punkt kontrolny przy wierzchołku
     // tak, żeby wektor styczny Béziera pasował do wektora stycznego krawędzi po drugiej stronie.
     // G1 - ten sam kierunek stycznych, C1 - ten sam wektor (kierunek i długość). Przy G0 nic nie robimy.
+    // ogólnie rusza tylko punkty kontrolne Bézierów, nie rusza wierzchołków.
     internal static class ContinuityFixer
     {
         private const double TangentVectorToHandleRatio = 3; // bo P′(0) = 3(V1 − V0)

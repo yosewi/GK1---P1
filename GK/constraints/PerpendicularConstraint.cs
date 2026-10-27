@@ -54,7 +54,7 @@ namespace GK.constraints
         }
 
         // edge to krawędź do poprawienia, fixedVertex jej koniec, który zostaje, vertexToMove drugi koniec
-        // referenceEdge to wzorzec, czyli druga krawędź pary; ona się nie rusza
+        // referenceEdge to wzorzec, czyli druga krawędź pary. Ona się nie rusza
         public override void Fix(Edge edge, Vertex fixedVertex)
         {
             // wzorzec - druga krawędź z pary
@@ -76,7 +76,7 @@ namespace GK.constraints
             double px = -referenceYdif / referenceLength;
             double py = referenceXdif / referenceLength;
 
-            // drugi pomysł na nowe miejsce (zamiast obracac, mozna przesunac)
+            // drugi pomysł na nowe miejsce (zamiast obracać, można przesunąć)
             (double x, double y) startPosition = (vertexToMove.x, vertexToMove.y);
             (double x, double y)? slidePosition = PositionAfterSlideAlongNextEdge(edge, fixedVertex, vertexToMove, (px, py));
 
