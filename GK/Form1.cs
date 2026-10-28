@@ -453,5 +453,11 @@ namespace GK
             drawer.showBSpline = DrawBSplyne.Checked;
             panel.Invalidate();
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            drawer.showBSplineHelpers = checkBox1.Checked;
+            panel.Invalidate();
+        }
     }
 }

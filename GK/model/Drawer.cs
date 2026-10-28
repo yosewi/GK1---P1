@@ -22,6 +22,8 @@ namespace GK.model
         private Pen dashedPen = new Pen(Color.Gray, 1) { DashStyle = DashStyle.Dash };
         public ILineDrawer lineDrawer { get; set; } = new LibraryLineDrawer();
         public bool showBSpline { get; set; } = false;
+        public bool showBSplineHelpers { get; set; } = false;
+        private Pen helperPen = new Pen(Color.CornflowerBlue, 1) { DashStyle = DashStyle.Dash };
 
         // najpierw wszystkie wielokąty, potem napisy, żeby żadna krawędź ich nie zasłoniła
         public void DrawSpace(Space space, Graphics graphics)
@@ -171,7 +173,9 @@ namespace GK.model
             }
 
             List<(double x, double y)> controlPoints = BSplineCurve.ControlPoints(polygon.vertices[0]);
-            foreach ((double x, double y)[] segment in BSplineCurve.ClosedPolygonToBezier(controlPoints))
+            List<(double x, double y)[]> segments = BSplineCurve.ClosedPolygonToBezier(controlPoints);
+
+            foreach ((double x, double y)[] segment in segments)
             {
                 // znalazłem punkty do segmentu Beziera, więc rysuje tworze z segmentu krzywą Beziera i ją rysuje istniejącym już algorytmem
                 List<(double x, double y)> points = BezierCurve.FindPoints(segment[0], segment[1], segment[2], segment[3]);
@@ -179,6 +183,32 @@ namespace GK.model
                 {
                     lineDrawer.DrawLine(graphics, points[i].x, points[i].y, points[i + 1].x, points[i + 1].y, Color.Blue);
                 }
+            }
+
+            if (showBSplineHelpers)
+            {
+                DrawBSplineHelpers(segments, graphics);
+            }
+        }
+
+        private void DrawBSplineHelpers(List<(double x, double y)[]> segments, Graphics graphics)
+        {
+            for (int k = 0; k < segments.Count; k++)
+            {
+                (double x, double y) S = segments[k][0];
+                (double x, double y) A = segments[k][1];
+                (double x, double y) B = segments[k][2];
+                (double x, double y) nextA = segments[(k + 1) % segments.Count][1]; // A z następnego boku
+
+                // odcinek pomocniczy
+                graphics.DrawLine(helperPen, (float)B.x, (float)B.y, (float)nextA.x, (float)nextA.y);
+
+                // punkty podziału boku
+                graphics.FillRectangle(Brushes.CornflowerBlue, (float)A.x - 3, (float)A.y - 3, 6, 6);
+                graphics.FillRectangle(Brushes.CornflowerBlue, (float)B.x - 3, (float)B.y - 3, 6, 6);
+
+                // punkt sklejenia
+                graphics.FillEllipse(Brushes.Blue, (float)S.x - 4, (float)S.y - 4, 8, 8);
             }
         }
     }

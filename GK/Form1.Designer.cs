@@ -51,6 +51,7 @@
             arcOnoffToolStripMenuItem = new ToolStripMenuItem();
             deleteEdgeToolStripMenuItem = new ToolStripMenuItem();
             restoreAllEdgesToolStripMenuItem = new ToolStripMenuItem();
+            checkBox1 = new CheckBox();
             panel.SuspendLayout();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -60,6 +61,7 @@
             // 
             // panel
             // 
+            panel.Controls.Add(checkBox1);
             panel.Controls.Add(DrawBSplyne);
             panel.Controls.Add(button2);
             panel.Controls.Add(button1);
@@ -251,6 +253,17 @@
             restoreAllEdgesToolStripMenuItem.Text = "Restore all deleted edges";
             restoreAllEdgesToolStripMenuItem.Click += restoreAllEdgesToolStripMenuItem_Click;
             // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(6, 211);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(175, 24);
+            checkBox1.TabIndex = 4;
+            checkBox1.Text = "Draw BSplyne helpers";
+            checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -293,5 +306,6 @@
         private ToolStripMenuItem deleteEdgeToolStripMenuItem;
         private ToolStripMenuItem restoreAllEdgesToolStripMenuItem;
         private CheckBox DrawBSplyne;
+        private CheckBox checkBox1;
     }
 }
