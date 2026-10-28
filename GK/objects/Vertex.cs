@@ -19,6 +19,7 @@ namespace GK.objects
         public Continuity continuity { get; set; } = Continuity.C1;
         public bool continuitySetByUser { get; set; } = false;
         public bool HasBezierNeighbour => firstEdge.type == EdgeType.Bezier || secondEdge.type == EdgeType.Bezier;
+        public bool HasDeletedEdge => firstEdge.deleted || secondEdge.deleted;
 
         public Vertex(double x, double y)
         {

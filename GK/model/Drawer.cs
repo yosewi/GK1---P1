@@ -52,6 +52,10 @@ namespace GK.model
         {
             foreach (Edge edge in polygon.edges)
             {
+                if (edge.deleted)
+                {
+                    continue;
+                }
                 if (edge.type == EdgeType.Bezier)
                 {
                     DrawBezierEdge(edge, graphics);

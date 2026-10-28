@@ -119,6 +119,7 @@ namespace GK
                         menuPolygon = space.polygons[i];
                         setLengthToolStripMenuItem.Enabled = edge.type == EdgeType.Line;
                         perpendicularToToolStripMenuItem.Enabled = edge.type == EdgeType.Line;
+                        deleteEdgeToolStripMenuItem.Enabled = !space.polygons[i].HasDeletedEdge();
                         EdgeContextMenu.Show(panel, e.Location);
                         return;
                     }
@@ -422,6 +423,11 @@ namespace GK
         }
 
         private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void deleteEdgeToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }

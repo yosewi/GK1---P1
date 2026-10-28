@@ -17,6 +17,7 @@ namespace GK.objects
         public EdgeType type { get; set; } = EdgeType.Line;
         public ControlPoint? controlPoint1 { get; set; }
         public ControlPoint? controlPoint2 { get; set; }
+        public bool deleted { get; set; } = false;
 
         public Edge(Vertex startVertex, Vertex endVertex)
         {
@@ -37,6 +38,10 @@ namespace GK.objects
         // sprawdza łuk, beziera i zwykłą krawędź
         public bool IsHit(double x, double y, double radius)
         {
+            if (deleted)
+            {
+                return false;
+            }
             // Punkt jest na łuku, gdy |odległość od środka − promień| ≤ radius
             // jego kąt musi mieścić się w zakresie łuku (ContainsArcWithAngle)
             if (type == EdgeType.Arc)
@@ -107,6 +112,11 @@ namespace GK.objects
         // domyślna ciągłość beziera - C1 chyba że sasiednia krawedz to łuk
         private static Continuity DefaultContinuityForBezier(Vertex v)
         {
+            if (v.HasDeletedEdge)
+            {
+                return Continuity.G0;
+            }
+
             if (v.HasArcNeighbour)
             {
                 return Continuity.G0;

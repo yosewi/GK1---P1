@@ -1,10 +1,11 @@
-﻿using System;
+﻿using GK.algorithms;
+using GK.enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using GK.algorithms;
 
 namespace GK.objects
 {
@@ -176,6 +177,44 @@ namespace GK.objects
             end.firstEdge = e2;
             v.firstEdge = e1;
             v.secondEdge = e2;
+        }
+
+        public bool HasDeletedEdge()
+        {
+            foreach (Edge e in edges)
+            {
+                if (e.deleted)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void DeleteEdge(Edge e)
+        {
+            if (e.type == EdgeType.Bezier)
+            {
+                e.SelectBezier();
+            }
+            else if (e.type == EdgeType.Arc)
+            {
+                e.SelectArc();
+            }
+
+            e.deleted = true;
+            e.startVertex.continuity = Continuity.G0;
+            e.startVertex.continuitySetByUser = false;
+            e.endVertex.continuity = Continuity.G0;
+            e.endVertex.continuitySetByUser = false;
+        }
+
+        public void ResurectEdges()
+        {
+            foreach (Edge e in edges)
+            {
+                e.deleted = false;
+            }
         }
     }
 }

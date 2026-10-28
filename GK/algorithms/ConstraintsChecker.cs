@@ -272,6 +272,11 @@ namespace GK.algorithms
             {
                 Edge edge = NextEdgeInDirection(fixedVertex, direction);
 
+                if (edge.deleted)
+                {
+                    return true;
+                }
+
                 // krawędź jest ok, dalej nie trzeba sprawdzać
                 if (EdgeSatisfiesConstraints(edge))
                 {
