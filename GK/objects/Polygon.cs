@@ -142,6 +142,10 @@ namespace GK.objects
             edges.Insert(id, e);
             e.startVertex.secondEdge = e;
             e.endVertex.firstEdge = e;
+            if (e1.deleted || e2.deleted)
+            {
+                HideEdge(e);
+            }
         }
 
         // zwraca krawedz na ktora sie kliknelo
@@ -202,6 +206,11 @@ namespace GK.objects
                 e.SelectArc();
             }
 
+            HideEdge(e);
+        }
+
+        private static void HideEdge(Edge e)
+        {
             e.deleted = true;
             e.startVertex.continuity = Continuity.G0;
             e.startVertex.continuitySetByUser = false;

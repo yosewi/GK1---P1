@@ -100,8 +100,8 @@ namespace GK
                         menuVertex = vertex;
                         menuPolygon = space.polygons[i];
                         g0ToolStripMenuItem.Enabled = vertex.HasCurveNeighbour;
-                        g1ToolStripMenuItem.Enabled = vertex.HasCurveNeighbour && vertex.CanBeG1();
-                        C1ToolStripMenuItem.Enabled = vertex.HasBezierNeighbour && !vertex.HasArcNeighbour;
+                        g1ToolStripMenuItem.Enabled = vertex.HasCurveNeighbour && vertex.CanBeG1() && !vertex.HasDeletedEdge;
+                        C1ToolStripMenuItem.Enabled = vertex.HasBezierNeighbour && !vertex.HasArcNeighbour && !vertex.HasDeletedEdge;
                         g0ToolStripMenuItem.Checked = vertex.continuity == Continuity.G0;
                         g1ToolStripMenuItem.Checked = vertex.continuity == Continuity.G1;
                         C1ToolStripMenuItem.Checked = vertex.continuity == Continuity.C1;
@@ -429,7 +429,23 @@ namespace GK
 
         private void deleteEdgeToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (menuPolygon != null && menuEdge != null && !menuPolygon.HasDeletedEdge())
+            {
+                space.RemoveConstraintsOfEdge(menuEdge);
+                menuPolygon.DeleteEdge(menuEdge);
+            }
+            menuEdge = null;
+            menuPolygon = null;
+            panel.Invalidate();
+        }
 
+        private void restoreAllEdgesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (Polygon polygon in space.polygons)
+            {
+                polygon.ResurectEdges();
+            }
+            panel.Invalidate();
         }
     }
 }

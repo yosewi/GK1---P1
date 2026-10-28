@@ -49,6 +49,7 @@
             perpendicularToToolStripMenuItem = new ToolStripMenuItem();
             arcOnoffToolStripMenuItem = new ToolStripMenuItem();
             deleteEdgeToolStripMenuItem = new ToolStripMenuItem();
+            restoreAllEdgesToolStripMenuItem = new ToolStripMenuItem();
             panel.SuspendLayout();
             panel1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -177,9 +178,9 @@
             // EdgeContextMenu
             // 
             EdgeContextMenu.ImageScalingSize = new Size(20, 20);
-            EdgeContextMenu.Items.AddRange(new ToolStripItem[] { addVertexToolStripMenuItem, bezierOnoffToolStripMenuItem, setLengthToolStripMenuItem, removeConstraintsToolStripMenuItem, perpendicularToToolStripMenuItem, arcOnoffToolStripMenuItem, deleteEdgeToolStripMenuItem });
+            EdgeContextMenu.Items.AddRange(new ToolStripItem[] { addVertexToolStripMenuItem, bezierOnoffToolStripMenuItem, setLengthToolStripMenuItem, removeConstraintsToolStripMenuItem, perpendicularToToolStripMenuItem, arcOnoffToolStripMenuItem, deleteEdgeToolStripMenuItem, restoreAllEdgesToolStripMenuItem });
             EdgeContextMenu.Name = "EdgeContextMenu";
-            EdgeContextMenu.Size = new Size(211, 200);
+            EdgeContextMenu.Size = new Size(248, 196);
             // 
             // addVertexToolStripMenuItem
             // 
@@ -230,6 +231,13 @@
             deleteEdgeToolStripMenuItem.Text = "Delete edge";
             deleteEdgeToolStripMenuItem.Click += deleteEdgeToolStripMenuItem_Click;
             // 
+            // restoreAllEdgesToolStripMenuItem
+            // 
+            restoreAllEdgesToolStripMenuItem.Name = "restoreAllEdgesToolStripMenuItem";
+            restoreAllEdgesToolStripMenuItem.Size = new Size(247, 24);
+            restoreAllEdgesToolStripMenuItem.Text = "Restore all deleted edges";
+            restoreAllEdgesToolStripMenuItem.Click += restoreAllEdgesToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -269,5 +277,6 @@
         private Button button1;
         private Button button2;
         private ToolStripMenuItem deleteEdgeToolStripMenuItem;
+        private ToolStripMenuItem restoreAllEdgesToolStripMenuItem;
     }
 }
