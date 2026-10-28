@@ -24,6 +24,7 @@ namespace GK.model
         public bool showBSpline { get; set; } = false;
         public bool showBSplineHelpers { get; set; } = false;
         private Pen helperPen = new Pen(Color.CornflowerBlue, 1) { DashStyle = DashStyle.Dash };
+        private static readonly Color[] helperColors = { Color.Red, Color.LimeGreen, Color.Magenta, Color.Orange };
 
         // najpierw wszystkie wielokąty, potem napisy, żeby żadna krawędź ich nie zasłoniła
         public void DrawSpace(Space space, Graphics graphics)
@@ -195,20 +196,24 @@ namespace GK.model
         {
             for (int k = 0; k < segments.Count; k++)
             {
-                (double x, double y) S = segments[k][0];
-                (double x, double y) A = segments[k][1];
-                (double x, double y) B = segments[k][2];
-                (double x, double y) nextA = segments[(k + 1) % segments.Count][1]; // A z następnego boku
+                (double x, double y)[] segment = segments[k];
 
-                // odcinek pomocniczy
-                graphics.DrawLine(helperPen, (float)B.x, (float)B.y, (float)nextA.x, (float)nextA.y);
+                for (int i = 0; i < 3; i++)
+                {
+                    // kolorowanie i rysowanie odcinków segmentów
+                    Color color = helperColors[(3 * k + i) % helperColors.Length];
+                    using (Pen pen = new Pen(color, 2))
+                    {
+                        graphics.DrawLine(pen, (float)segment[i].x, (float)segment[i].y, (float)segment[i + 1].x, (float)segment[i + 1].y);
+                    }
+                }
 
-                // punkty podziału boku
-                graphics.FillRectangle(Brushes.CornflowerBlue, (float)A.x - 3, (float)A.y - 3, 6, 6);
-                graphics.FillRectangle(Brushes.CornflowerBlue, (float)B.x - 3, (float)B.y - 3, 6, 6);
+                // punkty podziału boku: A i B
+                graphics.FillRectangle(Brushes.CornflowerBlue, (float)segment[1].x - 3, (float)segment[1].y - 3, 6, 6);
+                graphics.FillRectangle(Brushes.CornflowerBlue, (float)segment[2].x - 3, (float)segment[2].y - 3, 6, 6);
 
                 // punkt sklejenia
-                graphics.FillEllipse(Brushes.Blue, (float)S.x - 4, (float)S.y - 4, 8, 8);
+                graphics.FillEllipse(Brushes.Blue, (float)segment[0].x - 4, (float)segment[0].y - 4, 8, 8);
             }
         }
     }
