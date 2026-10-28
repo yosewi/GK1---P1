@@ -30,6 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             panel = new BufferingPanel();
+            DrawBSplyne = new CheckBox();
             button2 = new Button();
             button1 = new Button();
             panel1 = new Panel();
@@ -59,6 +60,7 @@
             // 
             // panel
             // 
+            panel.Controls.Add(DrawBSplyne);
             panel.Controls.Add(button2);
             panel.Controls.Add(button1);
             panel.Controls.Add(panel1);
@@ -71,6 +73,17 @@
             panel.MouseDown += panel_MouseDown;
             panel.MouseMove += panel_MouseMove;
             panel.MouseUp += panel_MouseUp;
+            // 
+            // DrawBSplyne
+            // 
+            DrawBSplyne.AutoSize = true;
+            DrawBSplyne.Location = new Point(6, 181);
+            DrawBSplyne.Name = "DrawBSplyne";
+            DrawBSplyne.Size = new Size(123, 24);
+            DrawBSplyne.TabIndex = 3;
+            DrawBSplyne.Text = "Draw BSplyne";
+            DrawBSplyne.UseVisualStyleBackColor = true;
+            DrawBSplyne.CheckedChanged += DrawBSplyne_CheckedChanged;
             // 
             // button2
             // 
@@ -185,49 +198,49 @@
             // addVertexToolStripMenuItem
             // 
             addVertexToolStripMenuItem.Name = "addVertexToolStripMenuItem";
-            addVertexToolStripMenuItem.Size = new Size(210, 24);
+            addVertexToolStripMenuItem.Size = new Size(247, 24);
             addVertexToolStripMenuItem.Text = "Add vertex";
             addVertexToolStripMenuItem.Click += addVertexToolStripMenuItem_Click;
             // 
             // bezierOnoffToolStripMenuItem
             // 
             bezierOnoffToolStripMenuItem.Name = "bezierOnoffToolStripMenuItem";
-            bezierOnoffToolStripMenuItem.Size = new Size(210, 24);
+            bezierOnoffToolStripMenuItem.Size = new Size(247, 24);
             bezierOnoffToolStripMenuItem.Text = "Bezier on/off";
             bezierOnoffToolStripMenuItem.Click += bezierOnoffToolStripMenuItem_Click;
             // 
             // setLengthToolStripMenuItem
             // 
             setLengthToolStripMenuItem.Name = "setLengthToolStripMenuItem";
-            setLengthToolStripMenuItem.Size = new Size(210, 24);
+            setLengthToolStripMenuItem.Size = new Size(247, 24);
             setLengthToolStripMenuItem.Text = "Set length";
             setLengthToolStripMenuItem.Click += setLengthToolStripMenuItem_Click;
             // 
             // removeConstraintsToolStripMenuItem
             // 
             removeConstraintsToolStripMenuItem.Name = "removeConstraintsToolStripMenuItem";
-            removeConstraintsToolStripMenuItem.Size = new Size(210, 24);
+            removeConstraintsToolStripMenuItem.Size = new Size(247, 24);
             removeConstraintsToolStripMenuItem.Text = "Remove constraints";
             removeConstraintsToolStripMenuItem.Click += removeConstraintsToolStripMenuItem_Click;
             // 
             // perpendicularToToolStripMenuItem
             // 
             perpendicularToToolStripMenuItem.Name = "perpendicularToToolStripMenuItem";
-            perpendicularToToolStripMenuItem.Size = new Size(210, 24);
+            perpendicularToToolStripMenuItem.Size = new Size(247, 24);
             perpendicularToToolStripMenuItem.Text = "Perpendicular to...";
             perpendicularToToolStripMenuItem.Click += perpendicularToToolStripMenuItem_Click;
             // 
             // arcOnoffToolStripMenuItem
             // 
             arcOnoffToolStripMenuItem.Name = "arcOnoffToolStripMenuItem";
-            arcOnoffToolStripMenuItem.Size = new Size(210, 24);
+            arcOnoffToolStripMenuItem.Size = new Size(247, 24);
             arcOnoffToolStripMenuItem.Text = "Arc on/off";
             arcOnoffToolStripMenuItem.Click += arcOnoffToolStripMenuItem_Click;
             // 
             // deleteEdgeToolStripMenuItem
             // 
             deleteEdgeToolStripMenuItem.Name = "deleteEdgeToolStripMenuItem";
-            deleteEdgeToolStripMenuItem.Size = new Size(210, 24);
+            deleteEdgeToolStripMenuItem.Size = new Size(247, 24);
             deleteEdgeToolStripMenuItem.Text = "Delete edge";
             deleteEdgeToolStripMenuItem.Click += deleteEdgeToolStripMenuItem_Click;
             // 
@@ -247,6 +260,7 @@
             Name = "Form1";
             Text = "Form1";
             panel.ResumeLayout(false);
+            panel.PerformLayout();
             panel1.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
@@ -278,5 +292,6 @@
         private Button button2;
         private ToolStripMenuItem deleteEdgeToolStripMenuItem;
         private ToolStripMenuItem restoreAllEdgesToolStripMenuItem;
+        private CheckBox DrawBSplyne;
     }
 }

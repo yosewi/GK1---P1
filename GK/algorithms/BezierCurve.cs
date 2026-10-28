@@ -13,8 +13,8 @@ namespace GK.algorithms
     {
         private const int n = 100;
 
-        // znajduje punkty dla krzywej beziera
-        public static List<(double x, double y)> FindPoints(Vertex v0, ControlPoint v1, ControlPoint v2, Vertex v3)
+        // punkty krzywej Beziera ze zwykłych współrzędnych
+        public static List<(double x, double y)> FindPoints((double x, double y) v0, (double x, double y) v1, (double x, double y) v2, (double x, double y) v3)
         {
             double a0x = v0.x;
             double a0y = v0.y;
@@ -57,6 +57,12 @@ namespace GK.algorithms
             }
 
             return points;
+        }
+
+        // punkty krzywej Beziera z obiektów
+        public static List<(double x, double y)> FindPoints(Vertex v0, ControlPoint v1, ControlPoint v2, Vertex v3)
+        {
+            return FindPoints((v0.x, v0.y), (v1.x, v1.y), (v2.x, v2.y), (v3.x, v3.y));
         }
     }
 }

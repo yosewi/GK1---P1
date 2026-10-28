@@ -21,6 +21,7 @@ namespace GK.model
         public Edge? highlightedEdge { get; set; }
         private Pen dashedPen = new Pen(Color.Gray, 1) { DashStyle = DashStyle.Dash };
         public ILineDrawer lineDrawer { get; set; } = new LibraryLineDrawer();
+        public bool showBSpline { get; set; } = false;
 
         // najpierw wszystkie wielokąty, potem napisy, żeby żadna krawędź ich nie zasłoniła
         public void DrawSpace(Space space, Graphics graphics)
@@ -28,6 +29,14 @@ namespace GK.model
             foreach (Polygon polygon in space.polygons)
             {
                 DrawPolygon(polygon, graphics);
+            }
+
+            if (showBSpline)
+            {
+                foreach (Polygon polygon in space.polygons)
+                {
+                    DrawBSpline(polygon, graphics);
+                }
             }
 
             foreach (Polygon polygon in space.polygons)
@@ -152,6 +161,25 @@ namespace GK.model
             }
 
             lineDrawer.DrawArc(graphics, arc, Color.Black);
+        }
+
+        private void DrawBSpline(Polygon polygon, Graphics graphics)
+        {
+            if (polygon.HasDeletedEdge())
+            {
+                return;
+            }
+
+            List<(double x, double y)> controlPoints = BSplineCurve.ControlPoints(polygon.vertices[0]);
+            foreach ((double x, double y)[] segment in BSplineCurve.ClosedPolygonToBezier(controlPoints))
+            {
+                // znalazłem punkty do segmentu Beziera, więc rysuje tworze z segmentu krzywą Beziera i ją rysuje istniejącym już algorytmem
+                List<(double x, double y)> points = BezierCurve.FindPoints(segment[0], segment[1], segment[2], segment[3]);
+                for (int i = 0; i < points.Count - 1; i++)
+                {
+                    lineDrawer.DrawLine(graphics, points[i].x, points[i].y, points[i + 1].x, points[i + 1].y, Color.Blue);
+                }
+            }
         }
     }
 }

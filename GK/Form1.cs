@@ -447,5 +447,11 @@ namespace GK
             }
             panel.Invalidate();
         }
+
+        private void DrawBSplyne_CheckedChanged(object sender, EventArgs e)
+        {
+            drawer.showBSpline = DrawBSplyne.Checked;
+            panel.Invalidate();
+        }
     }
 }
